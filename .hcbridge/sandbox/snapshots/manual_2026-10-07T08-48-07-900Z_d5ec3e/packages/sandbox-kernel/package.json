@@ -1,0 +1,18 @@
+{
+  "name": "@hcbridge/sandbox-kernel",
+  "version": "0.5.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "files": [
+    "src"
+  ]
+}

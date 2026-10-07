@@ -1,0 +1,12 @@
+{
+  "version": "0.3",
+  "changes": [
+    {
+      "file": "local/Parent.vue",
+      "nodeId": "REPLACE_WITH_INSPECTED_BUTTON_NODE_ID",
+      "operation": "set-prop",
+      "target": "type",
+      "value": "dashed"
+    }
+  ]
+}

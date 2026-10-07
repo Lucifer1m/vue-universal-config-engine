@@ -1,6 +1,6 @@
 {
   "name": "@hcbridge/patch-engine",
-  "version": "0.2.0",
+  "version": "0.5.0",
   "type": "module",
   "private": true,
   "exports": {
@@ -9,8 +9,8 @@
   "types": "./src/index.ts",
   "dependencies": {
     "@hcbridge/hcp": "workspace:*",
-    "@hcbridge/source-model": "workspace:*",
     "@hcbridge/vue-parser": "workspace:*",
+    "@hcbridge/source-model": "workspace:*",
     "@hcbridge/source-locator": "workspace:*",
     "magic-string": "1.4.1"
   },

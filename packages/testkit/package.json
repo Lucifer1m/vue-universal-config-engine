@@ -1,6 +1,6 @@
 {
   "name": "@hcbridge/testkit",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "type": "module",
   "private": true,
   "exports": {
@@ -10,9 +10,9 @@
   "dependencies": {
     "@hcbridge/capability-registry": "workspace:*",
     "@hcbridge/hcp": "workspace:*",
+    "@hcbridge/ts-analyzer": "workspace:*",
     "@hcbridge/patch-engine": "workspace:*",
     "@hcbridge/semantic-graph": "workspace:*",
-    "@hcbridge/ts-analyzer": "workspace:*",
     "@hcbridge/vue-parser": "workspace:*"
   },
   "devDependencies": {},

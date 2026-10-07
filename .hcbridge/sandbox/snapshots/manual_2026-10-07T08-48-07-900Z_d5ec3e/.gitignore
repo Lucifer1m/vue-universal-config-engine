@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+.hcbridge/cache/
+.hcbridge/snapshots/
+.hcbridge/reports/
+.DS_Store
+*.local

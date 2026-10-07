@@ -1,0 +1,17 @@
+{
+  "version": "0.4",
+  "id": "ev_muxtnabe_781eb648",
+  "createdAt": "2026-10-07T08:04:19.322Z",
+  "projectRoot": "F:\\code\\vue-universal-config-engine\\vue-universal-config-engine\\fixtures",
+  "status": "rolled-back",
+  "files": [],
+  "verification": {},
+  "safety": {
+    "SAFE": 1,
+    "ASSISTED": 0,
+    "RISKY": 0,
+    "REJECTED": 0,
+    "changes": 1,
+    "operations": 1
+  }
+}

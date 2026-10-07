@@ -1,0 +1,23 @@
+{
+  "name": "@hcbridge/patch-engine",
+  "version": "0.5.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@hcbridge/hcp": "workspace:*",
+    "@hcbridge/source-model": "workspace:*",
+    "@hcbridge/source-locator": "workspace:*",
+    "magic-string": "1.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "files": [
+    "src"
+  ]
+}

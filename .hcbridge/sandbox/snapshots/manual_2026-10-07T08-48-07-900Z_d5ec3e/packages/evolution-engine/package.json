@@ -1,0 +1,28 @@
+{
+  "name": "@hcbridge/evolution-engine",
+  "version": "0.5.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@hcbridge/capability-registry": "workspace:*",
+    "@hcbridge/hcp": "workspace:*",
+    "@hcbridge/patch-engine": "workspace:*",
+    "@hcbridge/semantic-graph": "workspace:*",
+    "@hcbridge/ts-analyzer": "workspace:*",
+    "@hcbridge/verifier": "workspace:*",
+    "@hcbridge/vue-parser": "workspace:*",
+    "@hcbridge/component-resolver": "workspace:*",
+    "@hcbridge/component-intelligence": "workspace:*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "files": [
+    "src"
+  ]
+}

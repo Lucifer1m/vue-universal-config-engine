@@ -1,0 +1,15 @@
+{
+  "actor": "ai",
+  "description": "把查询示例中的按钮改成 dashed",
+  "expectedHashes": {
+    "src/App.vue": "7b2b7d3060e296a2f20dcc09f74addd6ac5584438ed00ad04c4c604cff5beba4"
+  },
+  "operations": [
+    {
+      "kind": "replace-text",
+      "file": "src/App.vue",
+      "oldText": "type=\"primary\"",
+      "newText": "type=\"dashed\""
+    }
+  ]
+}

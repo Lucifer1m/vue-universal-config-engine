@@ -1,0 +1,1363 @@
+{
+  "id": "manual_2026-10-07T08-48-07-900Z_d5ec3e",
+  "createdAt": "2026-10-07T08:48:08.231Z",
+  "projectRoot": "F:\\code\\vue-universal-config-engine\\vue-universal-config-engine",
+  "sourceDir": "F:\\code\\vue-universal-config-engine\\vue-universal-config-engine\\.hcbridge\\sandbox\\snapshots\\manual_2026-10-07T08-48-07-900Z_d5ec3e",
+  "files": [
+    {
+      "path": ".gitignore",
+      "hash": "7faf002f67ff49f431b24dea20fd8d9fd84ce9e17643bf40ede63bd617bc1955",
+      "size": 105
+    },
+    {
+      "path": ".prettierrc.json",
+      "hash": "ebe733191f06a29fdd34a4683327d9a36c008ed8da564d8e7def1c700d7463ff",
+      "size": 89
+    },
+    {
+      "path": "apps/cli/dist/.tsbuildinfo",
+      "hash": "32430e59e6f9bde32ad4a34192ea94367ff051fe7b2564779e73b32c3ae1478a",
+      "size": 82426
+    },
+    {
+      "path": "apps/cli/dist/index.d.ts",
+      "hash": "43e818adf60173644896298637f47b01d5819b17eda46eaa32d0c7d64724d012",
+      "size": 31
+    },
+    {
+      "path": "apps/cli/dist/index.js",
+      "hash": "eeae1ed7e075a095df391ebd362d7540b7b79c61e5e679e25d96849bbc6ddfe4",
+      "size": 12520
+    },
+    {
+      "path": "apps/cli/dist/index.js.map",
+      "hash": "ca945adc1b561a3f6f0eafa22638a8e5fc5f16f04bbb62e26661fc580781755c",
+      "size": 14799
+    },
+    {
+      "path": "apps/cli/package.json",
+      "hash": "ad89ba4d8cc6028f0432d1faa4221472c822e0469659fa8f29fc052d00b9b730",
+      "size": 718
+    },
+    {
+      "path": "apps/cli/src/index.d.ts",
+      "hash": "43e818adf60173644896298637f47b01d5819b17eda46eaa32d0c7d64724d012",
+      "size": 31
+    },
+    {
+      "path": "apps/cli/src/index.js",
+      "hash": "eeae1ed7e075a095df391ebd362d7540b7b79c61e5e679e25d96849bbc6ddfe4",
+      "size": 12520
+    },
+    {
+      "path": "apps/cli/src/index.js.map",
+      "hash": "3951b0e966080bb3290d037e2d8f40071f9d1e3f236720902ac1ffd0ba55a690",
+      "size": 14792
+    },
+    {
+      "path": "apps/cli/src/index.ts",
+      "hash": "92540d4c0f50295a3c44db5449657d44483e9031ca4c96fcc17b0722c8ed74ed",
+      "size": 14179
+    },
+    {
+      "path": "apps/cli/tsconfig.json",
+      "hash": "7654c3937ce7ad93cac8124ccf03c7a0a1a25d50d59b88a04fc3d2aaa77b2806",
+      "size": 435
+    },
+    {
+      "path": "apps/inspector/README.md",
+      "hash": "2983b5d5583e9c9199658446252bbd04bbcd211d260d2796c8b920aa7f79ec75",
+      "size": 193
+    },
+    {
+      "path": "apps/sandbox/package.json",
+      "hash": "b84294c84c5aa3a6af9cab6e2540aedade73aa2e788e40561f47c2a9083547a6",
+      "size": 218
+    },
+    {
+      "path": "apps/sandbox/README.md",
+      "hash": "78c57556b1c90263f7e0c28a157d9d985365450b8ffcb691d09108801f634148",
+      "size": 525
+    },
+    {
+      "path": "apps/sandbox/src/index.ts",
+      "hash": "1cec2d75e3524aa9ff45203f266ce4305bfa7d322eba51be0696033c1abfcbc9",
+      "size": 11147
+    },
+    {
+      "path": "apps/sandbox/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "docs/adr/ADR-001-source-as-truth.md",
+      "hash": "0e6ea9d53a3a678ac726923642b5f87ce9edf8a3095113082c5aad74324bc8e5",
+      "size": 91
+    },
+    {
+      "path": "docs/adr/ADR-007-safe-reject.md",
+      "hash": "b0cdfec44fcc469320832cae0b46f845cf0a68ea3efdf55b240e35034efa46df",
+      "size": 121
+    },
+    {
+      "path": "docs/architecture/overview.md",
+      "hash": "f97e4735fbcf17542b11968bd56892b307f14bbdc48341348a198a3ffc8fdb17",
+      "size": 469
+    },
+    {
+      "path": "docs/conversion-rules/mvp.md",
+      "hash": "348a3ca3ba309f1acb2c9c9be8709616a17fac95bf99a248ecc96b54e466c2cc",
+      "size": 395
+    },
+    {
+      "path": "docs/evolver/feature-matrix.md",
+      "hash": "eb0c188b1af441be551f4ab3e431b74a70c1b1f4d49b38b4befc6b591b8361f8",
+      "size": 3008
+    },
+    {
+      "path": "docs/evolver/README.md",
+      "hash": "d9580d3afe2b393404ef9047969663fcdd9b96878d8583242ebace877a61ede2",
+      "size": 4347
+    },
+    {
+      "path": "docs/evolver/v0.3-real-project.md",
+      "hash": "1567f659c1dc21daa4e368a4a8810141bb1319d90ab892725e2f534c86e9e32b",
+      "size": 1736
+    },
+    {
+      "path": "docs/evolver/v0.4-component-intelligence.md",
+      "hash": "394aea14e7e2b40c57f0aafec529db3e65243c0c0f407c93912665512945523d",
+      "size": 1022
+    },
+    {
+      "path": "docs/evolver/v0.5-sandbox-kernel.md",
+      "hash": "dd0d944f327a785dbde4980dd2678c722dc5777922a04b6197e6c68ce64c5489",
+      "size": 2091
+    },
+    {
+      "path": "docs/hcp-spec/0.1.md",
+      "hash": "f6ede63e63d384f05144cc199ffa16101320a36df6d8a3a8ebc999e36cc1b1bf",
+      "size": 171
+    },
+    {
+      "path": "docs/platform-contract/adapter.md",
+      "hash": "85caf10ee74f833cdcf3442555f4dfbabcfa9cc64fe9a22ee52e9d213a02bb60",
+      "size": 229
+    },
+    {
+      "path": "examples/antdv-vite/index.html",
+      "hash": "9ebbcff94e8443f9d8a464cafff21fccfe74b49e0d40ab70187eec4511db4be4",
+      "size": 112
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/tsc",
+      "hash": "3b6d7397077a83319da441f87ed8d585c927735f96534ff9b942666a642eda7a",
+      "size": 4408
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/tsc.cmd",
+      "hash": "4a27a7ca43fb253ed238708508d99312feae69be7d8b5d34d51cb6b480e09466",
+      "size": 970
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/tsc.ps1",
+      "hash": "5f6d8b1248e3f65f002fd96774c8434e9342fc996d9b9c364308b1ed01aa0129",
+      "size": 1780
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/vite",
+      "hash": "9ab87489eda846f9ce2633b4d3712c2dddaa0fc16005be8897c9a1cc7e2b9868",
+      "size": 4544
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/vite.cmd",
+      "hash": "d6e84008c65326581b5dd9908886c5edd7bb04e7cbfe80c3bd7fe1fa964f0494",
+      "size": 1118
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/vite.ps1",
+      "hash": "8e760b23f303973118f78edb708d209d5d769348c371e0c8fff459a300a75b19",
+      "size": 1924
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/vue-tsc",
+      "hash": "e52c3b44644158bdf729e58fab45f4e820e656703553408a983673fd1735fc8e",
+      "size": 4490
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/vue-tsc.cmd",
+      "hash": "6779bdc9f9befdaba5402f29893f4c35a6a6c6be0de760b21622bb2596e9baaa",
+      "size": 1032
+    },
+    {
+      "path": "examples/antdv-vite/node_modules/.bin/vue-tsc.ps1",
+      "hash": "4c9077cd0e334aa5fa985cadd83780b85d5ae84d91053f5d4303a8778d5bef76",
+      "size": 1850
+    },
+    {
+      "path": "examples/antdv-vite/package.json",
+      "hash": "7a3a162cd5ea7ebf279cb85f6cdcb55967937870050dae1a54d8933d9bcf0406",
+      "size": 302
+    },
+    {
+      "path": "examples/antdv-vite/src/App.vue",
+      "hash": "7b2b7d3060e296a2f20dcc09f74addd6ac5584438ed00ad04c4c604cff5beba4",
+      "size": 432
+    },
+    {
+      "path": "examples/antdv-vite/src/main.ts",
+      "hash": "e53dd6e01c888aeff3f83c70424d2a114b06304662a276f10328082cec0ec3c5",
+      "size": 172
+    },
+    {
+      "path": "examples/antdv-vite/vite.config.ts",
+      "hash": "adf0f9de1bdc0117fad7c7fb7d4287c8e566bd65261b59efa184aa5847f80fee",
+      "size": 123
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxrgqkr_47cab046.json",
+      "hash": "be39405efbb5770c090e22bc90240f075d0be68401a960d904e1c8f1c594df30",
+      "size": 384
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxrgql3_b06f7460.json",
+      "hash": "50a8e8eba76e7ea673d4b9a27b785756075401c9ecf76a5edd8a106e24f9daaf",
+      "size": 384
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxrild1_219bd265.json",
+      "hash": "ab9c470557b0596a001c1bc781139a19e483a577c4d79d5e245c14417cf11d68",
+      "size": 384
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxrn72t_68b17042.json",
+      "hash": "30bd47b0b6b3e2ae86979bc3d989186c3ade6da4310f7adf5f025a2284d6d8b1",
+      "size": 384
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxtnabe_781eb648.json",
+      "hash": "a29569980c46c218547c75f361ed15a51a01b3c0c587d653b3ec39fcc4bc9b3b",
+      "size": 384
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxtqvlf_a77823f0.json",
+      "hash": "fa272004fd9bfc8b2dd8d93474fb7e9a855dd1b5b3fc63c6ba3acdb68c50a7b1",
+      "size": 384
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxtr9tj_abb102d0.json",
+      "hash": "260afbafa1f15406cbd52959ca47df42db096af88e462c0d58a535ee5ba13ec3",
+      "size": 384
+    },
+    {
+      "path": "fixtures/.hcbridge/history/ev_muxtvem6_58563ac8.json",
+      "hash": "028546d92da47f5bec8370dab67ae1c635458047528e0ffc8a79b66324cfee60",
+      "size": 384
+    },
+    {
+      "path": "fixtures/basic/change.json",
+      "hash": "a0bf46fc544381623224ce9bd13fb647d3204ee3c60eda9a36c82c36981391a5",
+      "size": 149
+    },
+    {
+      "path": "fixtures/basic/UserList.vue",
+      "hash": "057d3eaf6ec64e0e993cb631465c11cf87c493e772f07065b257f0be995445d1",
+      "size": 473
+    },
+    {
+      "path": "fixtures/complex/Complex.vue",
+      "hash": "720d7b92486b4a1388f503295f097b807474291ad808c1e816ebe53555437f2e",
+      "size": 320
+    },
+    {
+      "path": "fixtures/crud/UserCrud.vue",
+      "hash": "5e4e6409cb77bd689139cfc308fbb974d6d32837c48cab491ddc5e25e48f18d6",
+      "size": 465
+    },
+    {
+      "path": "fixtures/custom/Custom.vue",
+      "hash": "2fc0a4499a749a1ac3f9700f6f81531340623f6d4221880b01ea486f73015757",
+      "size": 340
+    },
+    {
+      "path": "fixtures/evolution/changes.example.json",
+      "hash": "50d111a5f5e066b0663c61366377d0462b78c8a30af89ba3896038878a245366",
+      "size": 542
+    },
+    {
+      "path": "fixtures/evolution/changes.local.example.json",
+      "hash": "20516cf0f262ee57a29e2af908890a832b4896e692d58ac124194bedc38b5f1b",
+      "size": 225
+    },
+    {
+      "path": "fixtures/local/Parent.vue",
+      "hash": "e152f6089cd4641926e5a491fcb7f417680d50af429ef09590f4c984c44e2484",
+      "size": 258
+    },
+    {
+      "path": "fixtures/local/UserSelector.vue",
+      "hash": "392dd803ef84b236aa856534275e6c0683db061112c4d9449ee704af2a32b333",
+      "size": 636
+    },
+    {
+      "path": "fixtures/README.md",
+      "hash": "7e2339d01dce76d68b9acd494925d7993e7d58f0cd3246cfe8db3f3f59059cc1",
+      "size": 204
+    },
+    {
+      "path": "fixtures/sandbox/edit-intent.example.json",
+      "hash": "13d6eccad4a44c577e5af86f04165bba7902c53d8b5ca808b3094ae81244610b",
+      "size": 360
+    },
+    {
+      "path": "fixtures/state/State.vue",
+      "hash": "4b47a12f174fc80482c30ef0918138d5c5a31ada03a758fa9b579a9e0ce6c1c9",
+      "size": 249
+    },
+    {
+      "path": "fixtures/unsupported/Unsupported.vue",
+      "hash": "c107a7a37cb0b7f2a3a49b96f863a98d396f5116e7702c0273fbdf9809a929fa",
+      "size": 221
+    },
+    {
+      "path": "Makefile",
+      "hash": "0b3818eb39f07758231e4ca69e4af364bb073de2d0ddab2fcca5a1f7c1a0e01a",
+      "size": 176
+    },
+    {
+      "path": "package.json",
+      "hash": "a2538d59cd6d0c60b2378ab0ac3d5d8e106faf3f6878f4f5d9b65881cda9f6d1",
+      "size": 1905
+    },
+    {
+      "path": "packages/build-adapter-core/dist/.tsbuildinfo",
+      "hash": "d8f80504b5614aff85f8948c00468ae8d39abda86fcc6491abc7840fbc60a626",
+      "size": 65988
+    },
+    {
+      "path": "packages/build-adapter-core/dist/index.d.ts",
+      "hash": "650ab37b16a40e232db5bfd9bc6a6d11de8c4b51ab3c6857f323914b11f22e63",
+      "size": 211
+    },
+    {
+      "path": "packages/build-adapter-core/dist/index.js",
+      "hash": "827c148a2159c5d098f9fe33185b555382ad63931193dda5f41f6af38a6a4445",
+      "size": 44
+    },
+    {
+      "path": "packages/build-adapter-core/dist/index.js.map",
+      "hash": "e235ed7144a63976ff7e2cf2bd4087c7ad7210fc76fccf6829deaa2728798dbf",
+      "size": 102
+    },
+    {
+      "path": "packages/build-adapter-core/package.json",
+      "hash": "c0f65f21ced976850e9a35f9ea7b216256da630c0a2133fd4d0d4f8dfb20d715",
+      "size": 363
+    },
+    {
+      "path": "packages/build-adapter-core/src/index.d.ts",
+      "hash": "650ab37b16a40e232db5bfd9bc6a6d11de8c4b51ab3c6857f323914b11f22e63",
+      "size": 211
+    },
+    {
+      "path": "packages/build-adapter-core/src/index.js",
+      "hash": "827c148a2159c5d098f9fe33185b555382ad63931193dda5f41f6af38a6a4445",
+      "size": 44
+    },
+    {
+      "path": "packages/build-adapter-core/src/index.js.map",
+      "hash": "c5cc74a18f1d973e2e8537baa98aac8ad5b853c2fed93bc578821bba2809b401",
+      "size": 95
+    },
+    {
+      "path": "packages/build-adapter-core/src/index.ts",
+      "hash": "84d517744df89ca818629b72a0fe2d71c9ca96edf059187ad35bf3aeb0c541f0",
+      "size": 195
+    },
+    {
+      "path": "packages/build-adapter-core/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/build-adapter-vite/dist/.tsbuildinfo",
+      "hash": "84f211894b73d14d5c91ff9cd0df6659850454cc53e31b0dbc492b2fa1e8cdf3",
+      "size": 66368
+    },
+    {
+      "path": "packages/build-adapter-vite/dist/index.d.ts",
+      "hash": "e01c9472948f74667b44522ad4e0174ef5a1616d701f1012096b6fba8e3779e0",
+      "size": 244
+    },
+    {
+      "path": "packages/build-adapter-vite/dist/index.js",
+      "hash": "31216d2b84c3a8a0ab22034cd7c1b62bc05783ae5c750595f63641bcdcbd558e",
+      "size": 446
+    },
+    {
+      "path": "packages/build-adapter-vite/dist/index.js.map",
+      "hash": "8612cf3785e9e9da03228a19c88fd6b960392bfa091b46c78d02053b48326cd1",
+      "size": 616
+    },
+    {
+      "path": "packages/build-adapter-vite/package.json",
+      "hash": "0d5934b7b87885689db7c397aea3062f991073b16e0c9f19fc4e9eef530af4a2",
+      "size": 369
+    },
+    {
+      "path": "packages/build-adapter-vite/src/index.d.ts",
+      "hash": "e01c9472948f74667b44522ad4e0174ef5a1616d701f1012096b6fba8e3779e0",
+      "size": 244
+    },
+    {
+      "path": "packages/build-adapter-vite/src/index.js",
+      "hash": "31216d2b84c3a8a0ab22034cd7c1b62bc05783ae5c750595f63641bcdcbd558e",
+      "size": 446
+    },
+    {
+      "path": "packages/build-adapter-vite/src/index.js.map",
+      "hash": "cb5a4eeb63bec66e2852c42106d3c01f2ac5af4523113346deb5451fd6b18681",
+      "size": 609
+    },
+    {
+      "path": "packages/build-adapter-vite/src/index.ts",
+      "hash": "9724120f4bdf136db63d24f2b99aa49baef43f73edff268292841173e7249d30",
+      "size": 562
+    },
+    {
+      "path": "packages/build-adapter-vite/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/capability-registry/dist/.tsbuildinfo",
+      "hash": "02092e5fb110d6426ae5b2dff9b17408e4b55cce78b9ce19b603f68129411727",
+      "size": 65988
+    },
+    {
+      "path": "packages/capability-registry/dist/index.d.ts",
+      "hash": "a6b73c0cd163ccd458a3a7f415eba43595ef4d3eeb97e728e89e5e466456bb44",
+      "size": 963
+    },
+    {
+      "path": "packages/capability-registry/dist/index.js",
+      "hash": "01aedc10f262664d080ae229937ff0cea9c573e06776c8af4cfd1e80648911e2",
+      "size": 2713
+    },
+    {
+      "path": "packages/capability-registry/dist/index.js.map",
+      "hash": "acdc063f1bdd95e8b43b51711e44e226d211e190571778a20e09f8f67195de11",
+      "size": 3344
+    },
+    {
+      "path": "packages/capability-registry/package.json",
+      "hash": "046718e4739b0e2c5bb3ed21bf3fa88674ba55f1c6504b95fcc9b517533db886",
+      "size": 295
+    },
+    {
+      "path": "packages/capability-registry/src/index.d.ts",
+      "hash": "a6b73c0cd163ccd458a3a7f415eba43595ef4d3eeb97e728e89e5e466456bb44",
+      "size": 963
+    },
+    {
+      "path": "packages/capability-registry/src/index.js",
+      "hash": "01aedc10f262664d080ae229937ff0cea9c573e06776c8af4cfd1e80648911e2",
+      "size": 2713
+    },
+    {
+      "path": "packages/capability-registry/src/index.js.map",
+      "hash": "168ae562b440e1069eedc21d15d6e6def06653ef820b269bedf67ff42fda6250",
+      "size": 3337
+    },
+    {
+      "path": "packages/capability-registry/src/index.ts",
+      "hash": "76c312743f9ea051a59f231bde34a62dfdb877fb7ab3d2933388c866c6419fb8",
+      "size": 3272
+    },
+    {
+      "path": "packages/capability-registry/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/component-intelligence/dist/.tsbuildinfo",
+      "hash": "f6d870c321d78c0f6faacc242a37008b5983d1b66be7cc3e7dc4c1c107a49511",
+      "size": 95375
+    },
+    {
+      "path": "packages/component-intelligence/dist/index.d.ts",
+      "hash": "f6faece1676c2608c7959e49db29d6eb7971349f48771e3a04b0a2700f7562d2",
+      "size": 1375
+    },
+    {
+      "path": "packages/component-intelligence/dist/index.js",
+      "hash": "ee4760ffaeb0b3c987d5eae8a59d9279f31d9d7e81042b00349db01ac18b1881",
+      "size": 16951
+    },
+    {
+      "path": "packages/component-intelligence/dist/index.js.map",
+      "hash": "96f9f0f61264300bbb8341d612a6e194f4cf3fa7b9b7fd3a3cf1e7eb098e2640",
+      "size": 19024
+    },
+    {
+      "path": "packages/component-intelligence/dist/index.test.d.ts",
+      "hash": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "size": 11
+    },
+    {
+      "path": "packages/component-intelligence/dist/index.test.js",
+      "hash": "993b37b4f0852af760f94c6ee63eff9c995c8943fe67bcf3c49e3b324729fb90",
+      "size": 1110
+    },
+    {
+      "path": "packages/component-intelligence/dist/index.test.js.map",
+      "hash": "a7bfd240704dbd935ab60486437b53271780e91b8b705dedafcbc5d1d03a7146",
+      "size": 1372
+    },
+    {
+      "path": "packages/component-intelligence/package.json",
+      "hash": "1eb8e3b1c97fb068ae3396131b19bc3d415de65eaa8fe733b6c77f95256c43df",
+      "size": 527
+    },
+    {
+      "path": "packages/component-intelligence/src/index.test.ts",
+      "hash": "9b8719d11e79734837a57daf2748520f6d15b65afecb79fac3ed7cd31c257e9e",
+      "size": 1023
+    },
+    {
+      "path": "packages/component-intelligence/src/index.ts",
+      "hash": "bb163ffce3124855bd23f125fddc99bacfbc769d365e0eb147c689f89b8955ba",
+      "size": 18163
+    },
+    {
+      "path": "packages/component-intelligence/tsconfig.json",
+      "hash": "a0739aa8f41efdc1d465f36d248977b3b078c318549a6383727722a1584b0f5c",
+      "size": 214
+    },
+    {
+      "path": "packages/component-resolver/dist/.tsbuildinfo",
+      "hash": "1ecaa0c716d314abe27314f0c24d70774eb04ecaa008931e511bfc86dd9594bc",
+      "size": 82967
+    },
+    {
+      "path": "packages/component-resolver/dist/index.d.ts",
+      "hash": "17591d3946ae8d1eb8b077990960f2f7a68237907bb20381c10473f611958e52",
+      "size": 610
+    },
+    {
+      "path": "packages/component-resolver/dist/index.js",
+      "hash": "41979d69083bec92fd7551cbba53fc77c835d8a56597a723bb00a4cb943f1d97",
+      "size": 3119
+    },
+    {
+      "path": "packages/component-resolver/dist/index.js.map",
+      "hash": "ad95aa150075fcb7d449f66155aa5a449182e110752c9aae9bc114558d09536f",
+      "size": 3780
+    },
+    {
+      "path": "packages/component-resolver/dist/index.test.d.ts",
+      "hash": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "size": 11
+    },
+    {
+      "path": "packages/component-resolver/dist/index.test.js",
+      "hash": "634bc855aee0fac4a3de50b357f4339c55921cd3e2905e10900096634a3df970",
+      "size": 934
+    },
+    {
+      "path": "packages/component-resolver/dist/index.test.js.map",
+      "hash": "38b208331c5533ca69942d3b496d6c337ac7217811aef5237fa06e4dff1a8975",
+      "size": 1022
+    },
+    {
+      "path": "packages/component-resolver/package.json",
+      "hash": "642e48e984258c12f7635de7fe1a4452806248abc9d300a1f965f3e1a2b26f77",
+      "size": 362
+    },
+    {
+      "path": "packages/component-resolver/src/index.d.ts",
+      "hash": "17591d3946ae8d1eb8b077990960f2f7a68237907bb20381c10473f611958e52",
+      "size": 610
+    },
+    {
+      "path": "packages/component-resolver/src/index.js",
+      "hash": "41979d69083bec92fd7551cbba53fc77c835d8a56597a723bb00a4cb943f1d97",
+      "size": 3119
+    },
+    {
+      "path": "packages/component-resolver/src/index.js.map",
+      "hash": "c7f6059a7218cd794236e78ef450e50a40f402eeb4e111497d61bc02ddd10e40",
+      "size": 3773
+    },
+    {
+      "path": "packages/component-resolver/src/index.test.d.ts",
+      "hash": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "size": 11
+    },
+    {
+      "path": "packages/component-resolver/src/index.test.js",
+      "hash": "15b43bb8b7fab7b4fc23a7b935b433d4c656f4ad51c2ec65ea8c648132023356",
+      "size": 931
+    },
+    {
+      "path": "packages/component-resolver/src/index.test.js.map",
+      "hash": "eaf938fdae1b849ac5df1599c859c8ebec8967281a99a4125509771b6a2138b6",
+      "size": 1015
+    },
+    {
+      "path": "packages/component-resolver/src/index.test.ts",
+      "hash": "f98c6dea76f1ec3aa54789a6dc36b6226a4924a379100e1ad4ad8df9bfd25a4d",
+      "size": 825
+    },
+    {
+      "path": "packages/component-resolver/src/index.ts",
+      "hash": "38c9a526e27dca2fa2d3d049480cb160cd487d92a3784603a9404bd7070c7621",
+      "size": 3732
+    },
+    {
+      "path": "packages/component-resolver/tsconfig.json",
+      "hash": "8e4860624c8c0a0eb68082c88ebfadbf5f732a53c3c4e889783adfe03172c0c7",
+      "size": 160
+    },
+    {
+      "path": "packages/evolution-engine/dist/index.d.ts",
+      "hash": "9f52ce766c2c180ea7bb427f25e5b3866bdba4570513e8ecc63f7e4952b8eebb",
+      "size": 5966
+    },
+    {
+      "path": "packages/evolution-engine/dist/index.js",
+      "hash": "7945ccbb8ca482e8185f10fb0729aa90fafab4fd68374c4015d029260875042f",
+      "size": 21067
+    },
+    {
+      "path": "packages/evolution-engine/dist/index.js.map",
+      "hash": "45a1dcee05b97faec5e8cb45bf3d5edefc9815ea68d743ba4a4173cc810da8ca",
+      "size": 22699
+    },
+    {
+      "path": "packages/evolution-engine/dist/index.test.d.ts",
+      "hash": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "size": 11
+    },
+    {
+      "path": "packages/evolution-engine/dist/index.test.js",
+      "hash": "7dd12b6af962bec798896e451ad2ff6a5ac8867f2507a3a5fa1bfe760cb39e3c",
+      "size": 3856
+    },
+    {
+      "path": "packages/evolution-engine/dist/index.test.js.map",
+      "hash": "60dee15195e5f227677f55523e6da1ca464b7915bfe8a134febb35cf905af469",
+      "size": 4370
+    },
+    {
+      "path": "packages/evolution-engine/package.json",
+      "hash": "5c0be909742d5ab10bcd2491b77051fee54f61e61be14fda794f7d9d537bb260",
+      "size": 730
+    },
+    {
+      "path": "packages/evolution-engine/src/index.test.ts",
+      "hash": "b369e9d8e8b0aaeb43b5f62320ad0c15a96d8a53b56d943bc1d30913381734f8",
+      "size": 3621
+    },
+    {
+      "path": "packages/evolution-engine/src/index.ts",
+      "hash": "5859d70e6fac111be42b7574bed2f631c2805c0ad96dacea43372fa83b20ba7e",
+      "size": 24353
+    },
+    {
+      "path": "packages/evolution-engine/tsconfig.json",
+      "hash": "a543cce2a771cdd8ec22f5e92bca06c87af688339de74222630506863d206698",
+      "size": 127
+    },
+    {
+      "path": "packages/evolution-engine/tsconfig.tsbuildinfo",
+      "hash": "660699b7e04fff87843ad30eb567c2b2d3fe7c259b3babfe293af6ed18a181b1",
+      "size": 31835
+    },
+    {
+      "path": "packages/hcp/dist/.tsbuildinfo",
+      "hash": "af9bde5cf552b759ef4e13cbcbdb246406ef703ed6cf64b820c7a9d7e1bec482",
+      "size": 80432
+    },
+    {
+      "path": "packages/hcp/dist/index.d.ts",
+      "hash": "0c83fc3ec480ab663a972f180ed92a5269ad911c1957338e6d98527a6a8b1762",
+      "size": 1749
+    },
+    {
+      "path": "packages/hcp/dist/index.js",
+      "hash": "ecfa832d66a61fe9e160d283911f567fc708586b5cbec2b8afa4860bafd9bccb",
+      "size": 7028
+    },
+    {
+      "path": "packages/hcp/dist/index.js.map",
+      "hash": "c7b7d061400109e2a27990327affb4c5d99f966a95e4052e719d568b0af346ec",
+      "size": 6460
+    },
+    {
+      "path": "packages/hcp/package.json",
+      "hash": "0797acd29c394a75f30597e26890f299cb511fb3804103469ff4d8001f0396f0",
+      "size": 498
+    },
+    {
+      "path": "packages/hcp/src/index.d.ts",
+      "hash": "0c83fc3ec480ab663a972f180ed92a5269ad911c1957338e6d98527a6a8b1762",
+      "size": 1749
+    },
+    {
+      "path": "packages/hcp/src/index.js",
+      "hash": "c90c5f0e2d4d35c510f656f78714050a39103caca5d0cd18874ae19a3785c26e",
+      "size": 6881
+    },
+    {
+      "path": "packages/hcp/src/index.js.map",
+      "hash": "70e0c01cea329fa6367edd4b5954ee67e96a09e0e5727be99248dd38e809f684",
+      "size": 6376
+    },
+    {
+      "path": "packages/hcp/src/index.ts",
+      "hash": "f8a0e964557232642abd9e035249181ffc3b83555d0029b503ffaf6e3e5560f5",
+      "size": 7426
+    },
+    {
+      "path": "packages/hcp/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/patch-engine/dist/.tsbuildinfo",
+      "hash": "2211d7cfcb1a6e8f97b5959c3be1905909500d0097b4261017ed679c9741cda8",
+      "size": 81145
+    },
+    {
+      "path": "packages/patch-engine/dist/index.d.ts",
+      "hash": "c7e89a7cd798537eb9494a3c41f2bd1cdaae10c00210935fa524ee57e0ccc4a1",
+      "size": 1316
+    },
+    {
+      "path": "packages/patch-engine/dist/index.js",
+      "hash": "02dfae6bf41320cf4d207fcfae65decce8d202d3a7f9c51fd627786f4b7a243b",
+      "size": 13946
+    },
+    {
+      "path": "packages/patch-engine/dist/index.js.map",
+      "hash": "77637147f320cc3ea59a74999ee2683b7d30b0fe2a3fdc018e681cad0b40ab02",
+      "size": 16950
+    },
+    {
+      "path": "packages/patch-engine/package.json",
+      "hash": "6f1b2e48031ac095b860fdd68e7992f1a5f9e85060a304b9d351c04066527e15",
+      "size": 469
+    },
+    {
+      "path": "packages/patch-engine/src/index.d.ts",
+      "hash": "c7e89a7cd798537eb9494a3c41f2bd1cdaae10c00210935fa524ee57e0ccc4a1",
+      "size": 1316
+    },
+    {
+      "path": "packages/patch-engine/src/index.js",
+      "hash": "02dfae6bf41320cf4d207fcfae65decce8d202d3a7f9c51fd627786f4b7a243b",
+      "size": 13946
+    },
+    {
+      "path": "packages/patch-engine/src/index.js.map",
+      "hash": "285f95f0bfad44c31307318c9cd9a18f5b6db086828bba692d10039bfb0f06c8",
+      "size": 16943
+    },
+    {
+      "path": "packages/patch-engine/src/index.ts",
+      "hash": "d3381560acd244bdb99a91739f04550bae69cd7db7c0ef10d53be9684c294708",
+      "size": 15093
+    },
+    {
+      "path": "packages/patch-engine/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/platform-adapter/dist/.tsbuildinfo",
+      "hash": "1eac7006446c213865b14a1826a6925017e6a359a5742a169426af0c426b7860",
+      "size": 81907
+    },
+    {
+      "path": "packages/platform-adapter/dist/index.d.ts",
+      "hash": "421fc24d7136f49e81f456ddd9b18969ae14b8a2521fb18997caa5603554a1c9",
+      "size": 556
+    },
+    {
+      "path": "packages/platform-adapter/dist/index.js",
+      "hash": "44ed432b3bd6b52058d7053882dba7e43581293b057e624daefb56c6dc567164",
+      "size": 1035
+    },
+    {
+      "path": "packages/platform-adapter/dist/index.js.map",
+      "hash": "2a88901936104d1ad8ef273c55e0d26dda5c43fb52dac6f4e73d1c599738ecf7",
+      "size": 1036
+    },
+    {
+      "path": "packages/platform-adapter/package.json",
+      "hash": "7a1b0b82f7f083cfd54ec2e8857397c1ac9d851be042012fb60fed047ca7044e",
+      "size": 447
+    },
+    {
+      "path": "packages/platform-adapter/src/index.d.ts",
+      "hash": "421fc24d7136f49e81f456ddd9b18969ae14b8a2521fb18997caa5603554a1c9",
+      "size": 556
+    },
+    {
+      "path": "packages/platform-adapter/src/index.js",
+      "hash": "728e5e5983b60abeb33ea5c1876977086592824f003a2461598ea95c61e0f45c",
+      "size": 1019
+    },
+    {
+      "path": "packages/platform-adapter/src/index.js.map",
+      "hash": "cb736579b177929421c38f275b89c4c6e3e4a215723238f021eee8f84f4e2940",
+      "size": 1009
+    },
+    {
+      "path": "packages/platform-adapter/src/index.ts",
+      "hash": "9b7ecfe3373a79f59986b11ff0696801bad7c38f5ca2aff18b01d4fdd88a5a84",
+      "size": 1267
+    },
+    {
+      "path": "packages/platform-adapter/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/platform-contract/dist/.tsbuildinfo",
+      "hash": "6809cc8ca94c6d3bdf07d9d15bd53a9121d0638461d8658887cb49adc583240c",
+      "size": 81519
+    },
+    {
+      "path": "packages/platform-contract/dist/index.d.ts",
+      "hash": "18ff7f3077e672048e6ff2863ba2d9a5dfc15f57896e695a67b5eb0d35414769",
+      "size": 607
+    },
+    {
+      "path": "packages/platform-contract/dist/index.js",
+      "hash": "827c148a2159c5d098f9fe33185b555382ad63931193dda5f41f6af38a6a4445",
+      "size": 44
+    },
+    {
+      "path": "packages/platform-contract/dist/index.js.map",
+      "hash": "e235ed7144a63976ff7e2cf2bd4087c7ad7210fc76fccf6829deaa2728798dbf",
+      "size": 102
+    },
+    {
+      "path": "packages/platform-contract/package.json",
+      "hash": "8b8e062fb6270acbebae2b174236ac275eac68d78ddad23419c05be1836a2ed3",
+      "size": 398
+    },
+    {
+      "path": "packages/platform-contract/src/index.d.ts",
+      "hash": "18ff7f3077e672048e6ff2863ba2d9a5dfc15f57896e695a67b5eb0d35414769",
+      "size": 607
+    },
+    {
+      "path": "packages/platform-contract/src/index.js",
+      "hash": "827c148a2159c5d098f9fe33185b555382ad63931193dda5f41f6af38a6a4445",
+      "size": 44
+    },
+    {
+      "path": "packages/platform-contract/src/index.js.map",
+      "hash": "c5cc74a18f1d973e2e8537baa98aac8ad5b853c2fed93bc578821bba2809b401",
+      "size": 95
+    },
+    {
+      "path": "packages/platform-contract/src/index.ts",
+      "hash": "ba78de16c392892b8ebc4f29fa03a90c459c849258e96ad19adda231c61c2810",
+      "size": 592
+    },
+    {
+      "path": "packages/platform-contract/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/runtime-trace/dist/.tsbuildinfo",
+      "hash": "bceb1f46a7ac2c678bb0b1251e726329ff10e1d4f240ead753d2348a357d993a",
+      "size": 65988
+    },
+    {
+      "path": "packages/runtime-trace/dist/index.d.ts",
+      "hash": "a6929e0daaea27b4ca69683c6734205eafcc344761aecf5526b8c2d6ca7d957f",
+      "size": 473
+    },
+    {
+      "path": "packages/runtime-trace/dist/index.js",
+      "hash": "fcee083e29be35d38fb57df2f91346869acb97deb447f3f3d321b3b831f1bec7",
+      "size": 136
+    },
+    {
+      "path": "packages/runtime-trace/dist/index.js.map",
+      "hash": "fad7c3e44dc09f1f3843ce12e3ecc8bad714cc20d827aee359e13eb2047ba800",
+      "size": 238
+    },
+    {
+      "path": "packages/runtime-trace/package.json",
+      "hash": "950e0374182074fe7023ad4f67a94db948434bfd8653c216c7236843b8c32bdf",
+      "size": 311
+    },
+    {
+      "path": "packages/runtime-trace/src/index.d.ts",
+      "hash": "a6929e0daaea27b4ca69683c6734205eafcc344761aecf5526b8c2d6ca7d957f",
+      "size": 473
+    },
+    {
+      "path": "packages/runtime-trace/src/index.js",
+      "hash": "fcee083e29be35d38fb57df2f91346869acb97deb447f3f3d321b3b831f1bec7",
+      "size": 136
+    },
+    {
+      "path": "packages/runtime-trace/src/index.js.map",
+      "hash": "1c70df34d2bea869b89ee896661830ac0cdde7f30ec9eff7cae99f2e90cc0412",
+      "size": 231
+    },
+    {
+      "path": "packages/runtime-trace/src/index.ts",
+      "hash": "a7039bc40311d65acdeec9cb7d080c83cf749777fb3a16be36b367a59ac29840",
+      "size": 478
+    },
+    {
+      "path": "packages/runtime-trace/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/sandbox-kernel/package.json",
+      "hash": "309efa5e778cc56c831ae57b11486555dbe2e43272f1ebda242d0c0e7b7f59cf",
+      "size": 312
+    },
+    {
+      "path": "packages/sandbox-kernel/src/index.test.ts",
+      "hash": "54131b5e2af3675e52acfe02ac3c1a17340831878ae4b8ca604220259f026a05",
+      "size": 2383
+    },
+    {
+      "path": "packages/sandbox-kernel/src/index.ts",
+      "hash": "32448a7808e3c27014b87f4d87c8c7a44034541f4f0d0efb6c95e8bbb0cc3d51",
+      "size": 25821
+    },
+    {
+      "path": "packages/sandbox-kernel/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/semantic-graph/dist/.tsbuildinfo",
+      "hash": "c8d81f6e6cd75a5cbfdebd15a52602007eac1274521e858f2fd5502c56a16d62",
+      "size": 79506
+    },
+    {
+      "path": "packages/semantic-graph/dist/index.d.ts",
+      "hash": "8a56a2220b3ee0e117d8fc054f5e30bfd6bae69dc71ca67eec1ba984e375a2b5",
+      "size": 1738
+    },
+    {
+      "path": "packages/semantic-graph/dist/index.js",
+      "hash": "3360db42cd76579144bddc5dd8aed465b5fdf742e3cc2264797627cbb4ca6e55",
+      "size": 4574
+    },
+    {
+      "path": "packages/semantic-graph/dist/index.js.map",
+      "hash": "234ffac096ba95534d1a27421d569554d9621d201220dab4b0e467fd575fc030",
+      "size": 5126
+    },
+    {
+      "path": "packages/semantic-graph/package.json",
+      "hash": "26cf3994df82e500f214bed1b64e9a5544293bfd14274c8075203016ed856d10",
+      "size": 446
+    },
+    {
+      "path": "packages/semantic-graph/src/index.d.ts",
+      "hash": "8a56a2220b3ee0e117d8fc054f5e30bfd6bae69dc71ca67eec1ba984e375a2b5",
+      "size": 1738
+    },
+    {
+      "path": "packages/semantic-graph/src/index.js",
+      "hash": "3360db42cd76579144bddc5dd8aed465b5fdf742e3cc2264797627cbb4ca6e55",
+      "size": 4574
+    },
+    {
+      "path": "packages/semantic-graph/src/index.js.map",
+      "hash": "7008cc74ff2176e3c74b2db2f4c3eb23e492feb820cdc7556250c3246c9d4646",
+      "size": 5119
+    },
+    {
+      "path": "packages/semantic-graph/src/index.ts",
+      "hash": "dd8a61da85f99a781f515ecdf5faf3b867ba5af99e8eb71a5e6d11d21a339656",
+      "size": 5850
+    },
+    {
+      "path": "packages/semantic-graph/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/source-locator/dist/.tsbuildinfo",
+      "hash": "73d3d2aa086e2f4fc220c70431caae67f7140bbd2f3b05b17f0d894cd6cade30",
+      "size": 66356
+    },
+    {
+      "path": "packages/source-locator/dist/index.d.ts",
+      "hash": "8680b7c37c0a5e1dd0b4be48660dd4fcb824f450a57ef31781be1bdc8412ce8f",
+      "size": 1560
+    },
+    {
+      "path": "packages/source-locator/dist/index.js",
+      "hash": "e1edafcf945035cfdf33d2399e1c0fdb7d723f108adce1741cccb36a2cad89f3",
+      "size": 2895
+    },
+    {
+      "path": "packages/source-locator/dist/index.js.map",
+      "hash": "f820082922ed354ab6cad02d2c6fce358fceae68246a6eca06f4bd9471401545",
+      "size": 3420
+    },
+    {
+      "path": "packages/source-locator/package.json",
+      "hash": "f3393e0da98ad8e3808bd97b9c5fa59d3927995ba607974e5b2fc3217eac0461",
+      "size": 359
+    },
+    {
+      "path": "packages/source-locator/src/index.d.ts",
+      "hash": "8680b7c37c0a5e1dd0b4be48660dd4fcb824f450a57ef31781be1bdc8412ce8f",
+      "size": 1560
+    },
+    {
+      "path": "packages/source-locator/src/index.js",
+      "hash": "e1edafcf945035cfdf33d2399e1c0fdb7d723f108adce1741cccb36a2cad89f3",
+      "size": 2895
+    },
+    {
+      "path": "packages/source-locator/src/index.js.map",
+      "hash": "8123f0fe3977142376411e0883eca320881713e62c01def3cdf02f671ae7da37",
+      "size": 3413
+    },
+    {
+      "path": "packages/source-locator/src/index.ts",
+      "hash": "5712abbc925904061081ec12fa8f4a5d4f4d90c68b33bc238e2559500e11cfb0",
+      "size": 3611
+    },
+    {
+      "path": "packages/source-locator/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/source-model/dist/.tsbuildinfo",
+      "hash": "4765dc15e9855528ca8244fd8ad402e0a68866f89ce05847ba5aa4098e48ec12",
+      "size": 65988
+    },
+    {
+      "path": "packages/source-model/dist/index.d.ts",
+      "hash": "ed54f4b680388b32218cc5b6236d78ca80a007976282a21b3bd3005c186ec686",
+      "size": 1950
+    },
+    {
+      "path": "packages/source-model/dist/index.js",
+      "hash": "b6107e880967159e5c85ef7436a16cba47256379e969570b054dd6a79da17201",
+      "size": 440
+    },
+    {
+      "path": "packages/source-model/dist/index.js.map",
+      "hash": "068d72c1963aa6ea8e477ce718b598bec3ea51d44ee62b1d6683b3a9a3b582e2",
+      "size": 670
+    },
+    {
+      "path": "packages/source-model/package.json",
+      "hash": "4a1052fd581c90108ba0fb001a04f0521cc2786cd15a5e83e37d1187cbba94c6",
+      "size": 310
+    },
+    {
+      "path": "packages/source-model/src/index.d.ts",
+      "hash": "ed54f4b680388b32218cc5b6236d78ca80a007976282a21b3bd3005c186ec686",
+      "size": 1950
+    },
+    {
+      "path": "packages/source-model/src/index.js",
+      "hash": "b6107e880967159e5c85ef7436a16cba47256379e969570b054dd6a79da17201",
+      "size": 440
+    },
+    {
+      "path": "packages/source-model/src/index.js.map",
+      "hash": "fbade78844261c9545f2711d8a28b9b50872397f98a2d214815dea8a80cba4ba",
+      "size": 663
+    },
+    {
+      "path": "packages/source-model/src/index.ts",
+      "hash": "6e12a8f5d404a70c62c83c0bae46a589ef2d82282ba9b51ac0c914b68a100a48",
+      "size": 2097
+    },
+    {
+      "path": "packages/source-model/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/testkit/dist/.tsbuildinfo",
+      "hash": "e024fdbdca631dceae6fbc4399256a7b942a748896ba45992ccb6888ad9b61aa",
+      "size": 97037
+    },
+    {
+      "path": "packages/testkit/dist/index.d.ts",
+      "hash": "b56d6c3d2e2ea49ac9c77b0d6e69516c31c0ef1024b4c5f264d76b42db7477ad",
+      "size": 266
+    },
+    {
+      "path": "packages/testkit/dist/index.js",
+      "hash": "0f91e9cff19e2d201d188d999ce07018983621322672edf386489ca57e812553",
+      "size": 1669
+    },
+    {
+      "path": "packages/testkit/dist/index.js.map",
+      "hash": "6a79e53de7a897d03477e8577cd12aa2170ebdbbabd492b68d9c20bf6885bce7",
+      "size": 1992
+    },
+    {
+      "path": "packages/testkit/dist/index.test.d.ts",
+      "hash": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "size": 11
+    },
+    {
+      "path": "packages/testkit/dist/index.test.js",
+      "hash": "e070d6449d727aed123723d97497f1621b691292d44e2495b407c29a83d1a634",
+      "size": 4205
+    },
+    {
+      "path": "packages/testkit/dist/index.test.js.map",
+      "hash": "f171842a1ebc2ca4d0fb3fb2403a7372867d6726e4e17eae7eb8d963f527f166",
+      "size": 4762
+    },
+    {
+      "path": "packages/testkit/package.json",
+      "hash": "6c6ba9379b10cb4dd8868d4d0306344676ea4996b7792cdd5bb887e6f9353742",
+      "size": 478
+    },
+    {
+      "path": "packages/testkit/src/index.d.ts",
+      "hash": "b56d6c3d2e2ea49ac9c77b0d6e69516c31c0ef1024b4c5f264d76b42db7477ad",
+      "size": 266
+    },
+    {
+      "path": "packages/testkit/src/index.js",
+      "hash": "0f91e9cff19e2d201d188d999ce07018983621322672edf386489ca57e812553",
+      "size": 1669
+    },
+    {
+      "path": "packages/testkit/src/index.js.map",
+      "hash": "46117ac9afa7a392628783d0b2a84b97cf8f2830a569c49aafef2ce157bd59c1",
+      "size": 1985
+    },
+    {
+      "path": "packages/testkit/src/index.test.d.ts",
+      "hash": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+      "size": 11
+    },
+    {
+      "path": "packages/testkit/src/index.test.js",
+      "hash": "e070d6449d727aed123723d97497f1621b691292d44e2495b407c29a83d1a634",
+      "size": 4205
+    },
+    {
+      "path": "packages/testkit/src/index.test.js.map",
+      "hash": "a7976a3c3d2e775d5df995bd206f53c16412e8394697400676d577dfe4658f59",
+      "size": 4755
+    },
+    {
+      "path": "packages/testkit/src/index.test.ts",
+      "hash": "1727975be05a49671d887cdf45d4e903dc3d3d1d176bfb9e618dfc5272a34fe7",
+      "size": 3922
+    },
+    {
+      "path": "packages/testkit/src/index.ts",
+      "hash": "f783ecbd2c3965ff63cab05aaa6d694fb80a07f47e4f5a36db4ceddecb28b7ad",
+      "size": 1796
+    },
+    {
+      "path": "packages/testkit/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/ts-analyzer/dist/.tsbuildinfo",
+      "hash": "2f78e7f6f12b029fe0ef1f69117a61be3c0b7b415444f937dd211c6c72efed51",
+      "size": 67041
+    },
+    {
+      "path": "packages/ts-analyzer/dist/index.d.ts",
+      "hash": "10a88af282b8c2afc5662c1ecbb77ca55dba455dbb8b46768b65bcd2fa0e16be",
+      "size": 894
+    },
+    {
+      "path": "packages/ts-analyzer/dist/index.js",
+      "hash": "b875f96efd0c533d9339356337079e949cd63b5b0d4fc8b1a8e610eff58a3ed4",
+      "size": 5248
+    },
+    {
+      "path": "packages/ts-analyzer/dist/index.js.map",
+      "hash": "2c2cfdd7ea22a9a6672097ab16a3c756fb76207ef4c6d9afc69829f1874bca14",
+      "size": 5732
+    },
+    {
+      "path": "packages/ts-analyzer/package.json",
+      "hash": "98a1fb110ef1e190e42da4ed593c78b79f57a111bc623e3adf87e61f2eff0cc5",
+      "size": 356
+    },
+    {
+      "path": "packages/ts-analyzer/src/index.d.ts",
+      "hash": "10a88af282b8c2afc5662c1ecbb77ca55dba455dbb8b46768b65bcd2fa0e16be",
+      "size": 894
+    },
+    {
+      "path": "packages/ts-analyzer/src/index.js",
+      "hash": "b875f96efd0c533d9339356337079e949cd63b5b0d4fc8b1a8e610eff58a3ed4",
+      "size": 5248
+    },
+    {
+      "path": "packages/ts-analyzer/src/index.js.map",
+      "hash": "8301898f26dbc7071eb4c428ab9a7158b28e4e03ebba4bb30b1e73b3ac330391",
+      "size": 5725
+    },
+    {
+      "path": "packages/ts-analyzer/src/index.ts",
+      "hash": "bee9bc7e96bf2360ce38d4a1d0911e55cb51cad6d92110e30ff0c9b452dda231",
+      "size": 5639
+    },
+    {
+      "path": "packages/ts-analyzer/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/verifier/dist/.tsbuildinfo",
+      "hash": "7146523a17baa10cb5190db8cf5a319ebcda0508e6bed6e2418d09c684aabfb3",
+      "size": 78713
+    },
+    {
+      "path": "packages/verifier/dist/index.d.ts",
+      "hash": "22c656a7b895ccd03ab9c7efbb4fa700948471b74ade43c0574bc4cc10bb01f9",
+      "size": 622
+    },
+    {
+      "path": "packages/verifier/dist/index.js",
+      "hash": "b6a189e59e5fa9a7693c1a958c439acd6dfdc62b2c07c6ac691248c92a0d6ea3",
+      "size": 3261
+    },
+    {
+      "path": "packages/verifier/dist/index.js.map",
+      "hash": "a29af29dffc9892dc13b7f013d93e2dcebee36ff3693317616513a5a79f37882",
+      "size": 4050
+    },
+    {
+      "path": "packages/verifier/package.json",
+      "hash": "04b3f51b0ec4c94379a88a4ab1682b1ed94c1071cb56e88e68e14c3afb135248",
+      "size": 396
+    },
+    {
+      "path": "packages/verifier/src/index.d.ts",
+      "hash": "22c656a7b895ccd03ab9c7efbb4fa700948471b74ade43c0574bc4cc10bb01f9",
+      "size": 622
+    },
+    {
+      "path": "packages/verifier/src/index.js",
+      "hash": "b6a189e59e5fa9a7693c1a958c439acd6dfdc62b2c07c6ac691248c92a0d6ea3",
+      "size": 3261
+    },
+    {
+      "path": "packages/verifier/src/index.js.map",
+      "hash": "417c7b71b7a9f1f21a257f932a1bdb587c31d1f27a94d5cd6ea0c5eed77a36a7",
+      "size": 4043
+    },
+    {
+      "path": "packages/verifier/src/index.ts",
+      "hash": "5651fb32535ff2bb0f1a7b734f2638b09e7a641fa5436b1a5b41c85be9e7b2ce",
+      "size": 3393
+    },
+    {
+      "path": "packages/verifier/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "packages/vue-parser/dist/.tsbuildinfo",
+      "hash": "54f67d5d99e2cd06e05357dda0df4cebc60f948688480bebf93c7692746643f8",
+      "size": 78348
+    },
+    {
+      "path": "packages/vue-parser/dist/index.d.ts",
+      "hash": "27cdfad0e80585ddec7c7ccdcb8ff62e75752d73c3b00f674e8da18d70781cfc",
+      "size": 1704
+    },
+    {
+      "path": "packages/vue-parser/dist/index.js",
+      "hash": "b1e8993c1a27a170f61966e0f24a57e84fb64e4a4bbc2793978e0e8859c712a2",
+      "size": 6984
+    },
+    {
+      "path": "packages/vue-parser/dist/index.js.map",
+      "hash": "8d71caf546912f427926102d9ff1faa37923b5c88bb7cff892584fd4d093bf01",
+      "size": 8008
+    },
+    {
+      "path": "packages/vue-parser/package.json",
+      "hash": "c4d55eea480530b6c6b810060d6132088d347b32ce0908c6c4da8d6d91b5d84e",
+      "size": 454
+    },
+    {
+      "path": "packages/vue-parser/src/index.d.ts",
+      "hash": "27cdfad0e80585ddec7c7ccdcb8ff62e75752d73c3b00f674e8da18d70781cfc",
+      "size": 1704
+    },
+    {
+      "path": "packages/vue-parser/src/index.js",
+      "hash": "8c33898c1470bcb7838d3b02f9ac73e04abf43f26e41caf36b299adaaf4e064e",
+      "size": 6947
+    },
+    {
+      "path": "packages/vue-parser/src/index.js.map",
+      "hash": "558ea8e8d4f0f9d55d28940f3fa448c637173cd035f0b21bb1f2f85193dc7b7c",
+      "size": 7980
+    },
+    {
+      "path": "packages/vue-parser/src/index.ts",
+      "hash": "ba7b542d3bcec48919c408f4d2bbf7dca11f3d01c14ca2df5187f1e153437bc7",
+      "size": 8185
+    },
+    {
+      "path": "packages/vue-parser/tsconfig.json",
+      "hash": "8b498057010d078f284cc2fab0a59daee64bb73c25e7ceabaa2742fdf1576699",
+      "size": 158
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "hash": "7a6286e3e26d61269a610713dbec3ee2241531ef8fba13c23e058b98f6a503ae",
+      "size": 64151
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "hash": "416df1a3739b30e16a44118f0af10e6e96aa6ea7a5707111bc8b37ebde6ff58a",
+      "size": 97
+    },
+    {
+      "path": "README.md",
+      "hash": "5e66a64e4a35dfdf41ff28ebc99c73375250483e0f7b44914470773e10c45c22",
+      "size": 8119
+    },
+    {
+      "path": "tsconfig.base.json",
+      "hash": "a937bf2c9b980dc29e151f0e1f5e970abab1515f2094826ca5b264f180d83811",
+      "size": 431
+    },
+    {
+      "path": "tsconfig.json",
+      "hash": "04350a0e8b75e5d85787867613735f2d16c210fede52ff45d2d39c3e62c2d5b8",
+      "size": 1165
+    },
+    {
+      "path": "vitest.config.ts",
+      "hash": "748aa6b1c78e42d6eb3bb35916fde003ffeebc5071e14097a3d44d7b442d99de",
+      "size": 147
+    }
+  ]
+}

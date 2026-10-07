@@ -196,6 +196,9 @@ importers:
       '@hcbridge/capability-registry':
         specifier: workspace:*
         version: link:../../packages/capability-registry
+      '@hcbridge/component-intelligence':
+        specifier: workspace:*
+        version: link:../../packages/component-intelligence
       '@hcbridge/evolution-engine':
         specifier: workspace:*
         version: link:../../packages/evolution-engine
@@ -208,6 +211,9 @@ importers:
       '@hcbridge/platform-adapter':
         specifier: workspace:*
         version: link:../../packages/platform-adapter
+      '@hcbridge/sandbox-kernel':
+        specifier: workspace:*
+        version: link:../../packages/sandbox-kernel
       '@hcbridge/semantic-graph':
         specifier: workspace:*
         version: link:../../packages/semantic-graph
@@ -220,6 +226,12 @@ importers:
       '@hcbridge/vue-parser':
         specifier: workspace:*
         version: link:../../packages/vue-parser
+
+  apps/sandbox:
+    dependencies:
+      '@hcbridge/sandbox-kernel':
+        specifier: workspace:*
+        version: link:../../packages/sandbox-kernel
 
   examples/antdv-vite:
     dependencies:
@@ -257,6 +269,27 @@ importers:
 
   packages/capability-registry: {}
 
+  packages/component-intelligence:
+    dependencies:
+      '@hcbridge/component-resolver':
+        specifier: workspace:*
+        version: link:../component-resolver
+      '@hcbridge/source-locator':
+        specifier: workspace:*
+        version: link:../source-locator
+      '@hcbridge/source-model':
+        specifier: workspace:*
+        version: link:../source-model
+      '@hcbridge/ts-analyzer':
+        specifier: workspace:*
+        version: link:../ts-analyzer
+      '@hcbridge/vue-parser':
+        specifier: workspace:*
+        version: link:../vue-parser
+      typescript:
+        specifier: npm:typescript@5.9.3
+        version: 5.9.3
+
   packages/component-resolver:
     dependencies:
       '@hcbridge/ts-analyzer':
@@ -268,6 +301,9 @@ importers:
       '@hcbridge/capability-registry':
         specifier: workspace:*
         version: link:../capability-registry
+      '@hcbridge/component-intelligence':
+        specifier: workspace:*
+        version: link:../component-intelligence
       '@hcbridge/component-resolver':
         specifier: workspace:*
         version: link:../component-resolver
@@ -280,6 +316,9 @@ importers:
       '@hcbridge/semantic-graph':
         specifier: workspace:*
         version: link:../semantic-graph
+      '@hcbridge/source-model':
+        specifier: workspace:*
+        version: link:../source-model
       '@hcbridge/ts-analyzer':
         specifier: workspace:*
         version: link:../ts-analyzer
@@ -345,6 +384,8 @@ importers:
         version: link:../patch-engine
 
   packages/runtime-trace: {}
+
+  packages/sandbox-kernel: {}
 
   packages/semantic-graph:
     dependencies:

@@ -1,0 +1,24 @@
+{
+  "name": "@hcbridge/component-intelligence",
+  "version": "0.5.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "types": "./src/index.ts",
+  "dependencies": {
+    "@hcbridge/source-locator": "workspace:*",
+    "@hcbridge/source-model": "workspace:*",
+    "@hcbridge/vue-parser": "workspace:*",
+    "@hcbridge/ts-analyzer": "workspace:*",
+    "@hcbridge/component-resolver": "workspace:*",
+    "typescript": "npm:typescript@5.9.3"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "files": [
+    "src"
+  ]
+}
