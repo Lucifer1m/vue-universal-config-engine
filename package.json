@@ -1,7 +1,7 @@
 {
   "name": "vue-universal-config-engine",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Vue 3 high-code configurability bridge: inspect, minimally patch, reparse and verify.",
   "type": "module",
   "packageManager": "pnpm@12.9.1",
@@ -18,7 +18,12 @@
     "inspect:fixture": "tsx apps/cli/src/index.ts inspect fixtures/basic/UserList.vue",
     "plan:fixture": "tsx apps/cli/src/index.ts plan fixtures/basic/UserList.vue fixtures/basic/change.json",
     "apply:fixture": "tsx apps/cli/src/index.ts apply fixtures/basic/UserList.vue fixtures/basic/change.json",
-    "build": "tsc -b"
+    "build": "tsc -b",
+    "scan": "tsx apps/cli/src/index.ts scan .",
+    "evolve": "tsx apps/cli/src/index.ts evolve .",
+    "doctor": "tsx apps/cli/src/index.ts doctor .",
+    "report": "tsx apps/cli/src/index.ts report .",
+    "snapshot": "tsx apps/cli/src/index.ts snapshot ."
   },
   "devDependencies": {
     "@types/node": "^24.7.2",

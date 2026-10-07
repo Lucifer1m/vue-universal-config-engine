@@ -1,0 +1,26 @@
+{
+  "version": "0.2",
+  "changes": [
+    {
+      "file": "basic/UserList.vue",
+      "nodeId": "node_replace_me",
+      "operation": "set-prop",
+      "target": "type",
+      "value": "default"
+    },
+    {
+      "file": "basic/UserList.vue",
+      "nodeId": "node_replace_me",
+      "operation": "set-binding",
+      "target": "disabled",
+      "value": "loading"
+    },
+    {
+      "file": "basic/UserList.vue",
+      "nodeId": "node_replace_me",
+      "operation": "set-event",
+      "target": "click",
+      "value": "search"
+    }
+  ]
+}

@@ -1,22 +1,56 @@
 {
   "files": [],
   "references": [
-    {"path": "./packages/source-model"},
-    {"path": "./packages/vue-parser"},
-    {"path": "./packages/ts-analyzer"},
-    {"path": "./packages/semantic-graph"},
-    {"path": "./packages/hcp"},
-    {"path": "./packages/capability-registry"},
-    {"path": "./packages/source-locator"},
-    {"path": "./packages/patch-engine"},
-    {"path": "./packages/verifier"},
-    {"path": "./packages/platform-contract"},
-    {"path": "./packages/platform-adapter"},
-    {"path": "./packages/build-adapter-core"},
-    {"path": "./packages/build-adapter-vite"},
-    {"path": "./packages/runtime-trace"},
-    {"path": "./packages/testkit"},
-    {"path": "./apps/cli"
+    {
+      "path": "./packages/source-model"
+    },
+    {
+      "path": "./packages/vue-parser"
+    },
+    {
+      "path": "./packages/ts-analyzer"
+    },
+    {
+      "path": "./packages/semantic-graph"
+    },
+    {
+      "path": "./packages/hcp"
+    },
+    {
+      "path": "./packages/capability-registry"
+    },
+    {
+      "path": "./packages/source-locator"
+    },
+    {
+      "path": "./packages/patch-engine"
+    },
+    {
+      "path": "./packages/verifier"
+    },
+    {
+      "path": "./packages/platform-contract"
+    },
+    {
+      "path": "./packages/platform-adapter"
+    },
+    {
+      "path": "./packages/build-adapter-core"
+    },
+    {
+      "path": "./packages/build-adapter-vite"
+    },
+    {
+      "path": "./packages/runtime-trace"
+    },
+    {
+      "path": "./packages/testkit"
+    },
+    {
+      "path": "./packages/evolution-engine"
+    },
+    {
+      "path": "./apps/cli"
     }
   ]
 }

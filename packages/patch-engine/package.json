@@ -9,7 +9,6 @@
   "types": "./src/index.ts",
   "dependencies": {
     "@hcbridge/hcp": "workspace:*",
-    "@hcbridge/vue-parser": "workspace:*",
     "@hcbridge/source-model": "workspace:*",
     "@hcbridge/source-locator": "workspace:*",
     "magic-string": "1.4.1"

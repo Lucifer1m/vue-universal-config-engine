@@ -37,10 +37,12 @@ export interface HcpProject {
   diagnostics: SemanticGraph['diagnostics'];
 }
 
+export type ChangeOperation = 'set-prop' | 'remove-prop' | 'set-text' | 'set-binding' | 'set-event' | 'set-visibility' | 'delete-node' | 'insert-child';
+
 export interface ChangeSet {
   file: string;
   nodeId: string;
-  operation: 'set-prop' | 'set-text' | 'set-binding';
+  operation: ChangeOperation;
   target: string;
   value: string;
 }
@@ -72,6 +74,10 @@ export function projectToHcp(
       }
     }
 
+    if (templateNode.kind === 'text') {
+      capabilities.push({ type: 'custom', name: 'text', editable: true, value: { kind: 'unknown', value: '' }, confidence: 0.99, ownership: 'PLATFORM', source: templateNode.source });
+    }
+
     for (const directive of templateNode.directives) {
       if (directive.name === 'if' || directive.name === 'for') {
         capabilities.push({ type: 'visibility', name: directive.name, editable: false, value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'unknown', value: '' }, confidence: 0.98, ownership: 'CODE', source: directive.source });
@@ -81,6 +87,12 @@ export function projectToHcp(
       }
       if (directive.name === 'on') {
         capabilities.push({ type: 'event', name: directive.arg ?? 'unknown', editable: false, value: directive.expression ? { kind: 'symbol', value: directive.expression } : { kind: 'unknown', value: '' }, confidence: 0.95, ownership: 'CODE', source: directive.source });
+      }
+      if (directive.name === 'slot') {
+        capabilities.push({ type: 'slot', name: directive.arg ?? 'default', editable: false, value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'symbol', value: 'default' }, confidence: 0.9, ownership: 'CODE', source: directive.source });
+      }
+      if (directive.name === 'style' || directive.name === 'class') {
+        capabilities.push({ type: 'style', name: directive.name, editable: true, value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'unknown', value: '' }, confidence: 0.9, ownership: 'SHARED', source: directive.source });
       }
     }
 

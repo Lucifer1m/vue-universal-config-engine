@@ -8,7 +8,6 @@
   },
   "types": "./src/index.ts",
   "dependencies": {
-    "@hcbridge/source-locator": "workspace:*",
     "@hcbridge/source-model": "workspace:*",
     "@vue/compiler-dom": "3.5.43",
     "@vue/compiler-sfc": "3.5.43",

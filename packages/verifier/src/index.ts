@@ -20,9 +20,11 @@ export function verifyFile(file: string, text: string): VerifyResult {
 
 export function verifyProject(projectDir: string): VerifyResult {
   const result = verifyFile(path.join(projectDir, '__synthetic__.vue'), '<template><div /></template>');
-  const typecheck = runOptional(projectDir, 'npx', ['vue-tsc', '--noEmit']);
+  const command = 'pnpm';
+  const execPrefix = ['exec'];
+  const typecheck = runOptional(projectDir, command, [...execPrefix, 'vue-tsc', '--noEmit']);
   const build = fs.existsSync(path.join(projectDir, 'vite.config.ts')) || fs.existsSync(path.join(projectDir, 'vite.config.js'))
-    ? runOptional(projectDir, 'npx', ['vite', 'build'])
+    ? runOptional(projectDir, command, [...execPrefix, 'vite', 'build'])
     : { attempted: false, ok: true, output: 'No Vite config found; build skipped.' };
   return { ...result, typecheck, build };
 }
