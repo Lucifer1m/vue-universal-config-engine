@@ -8,8 +8,8 @@
   },
   "types": "./src/index.ts",
   "dependencies": {
-    "@hcbridge/hcp": "0.1.0",
-    "@hcbridge/patch-engine": "0.1.0"
+    "@hcbridge/hcp": "workspace:*",
+    "@hcbridge/patch-engine": "workspace:*"
   },
   "devDependencies": {},
   "scripts": {

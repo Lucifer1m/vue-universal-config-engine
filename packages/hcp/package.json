@@ -8,9 +8,9 @@
   },
   "types": "./src/index.ts",
   "dependencies": {
-    "@hcbridge/source-model": "0.1.0",
-    "@hcbridge/semantic-graph": "0.1.0",
-    "@hcbridge/capability-registry": "0.1.0"
+    "@hcbridge/source-model": "workspace:*",
+    "@hcbridge/semantic-graph": "workspace:*",
+    "@hcbridge/capability-registry": "workspace:*"
   },
   "devDependencies": {},
   "scripts": {

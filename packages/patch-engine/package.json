@@ -3,10 +3,22 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "exports": {".": "./src/index.ts"},
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "types": "./src/index.ts",
-  "dependencies": {"@hcbridge/hcp":"0.1.0","@hcbridge/source-model":"0.1.0","@hcbridge/source-locator":"0.1.0","magic-string":"1.4.1"},
+  "dependencies": {
+    "@hcbridge/hcp": "workspace:*",
+    "@hcbridge/vue-parser": "workspace:*",
+    "@hcbridge/source-model": "workspace:*",
+    "@hcbridge/source-locator": "workspace:*",
+    "magic-string": "1.4.1"
+  },
   "devDependencies": {},
-  "scripts": {"typecheck": "tsc -p tsconfig.json"}
-  ,"files":["src"]
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "files": [
+    "src"
+  ]
 }

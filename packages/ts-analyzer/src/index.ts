@@ -1,4 +1,6 @@
-import * as ts from 'typescript';
+import * as ts from 'typescript/unstable/ast';
+import { API } from 'typescript/unstable/sync';
+import { createVirtualFileSystem } from 'typescript/unstable/fs';
 import type { SourceRef } from '@hcbridge/source-model';
 import { createNodeId, createSourceRef, fingerprint } from '@hcbridge/source-locator';
 
@@ -32,18 +34,67 @@ export interface ScriptAnalysis {
   diagnostics: { code: string; message: string; source?: SourceRef }[];
 }
 
+const virtualConfig = '/hcbridge-virtual/tsconfig.json';
+const virtualFile = '/hcbridge-virtual/script.ts';
+
+let parser: { api: API; vfs: ReturnType<typeof createVirtualFileSystem>; opened: boolean } | undefined;
+
+function parseScript(content: string): { sourceFile: ts.SourceFile; release: () => void } {
+  if (!parser) {
+    const vfs = createVirtualFileSystem({
+      [virtualConfig]: JSON.stringify({
+        compilerOptions: { target: 'ESNext', module: 'ESNext', strict: true },
+        files: ['script.ts'],
+      }),
+      [virtualFile]: content,
+    });
+    const api = new API({ fs: vfs, cwd: '/hcbridge-virtual' });
+    // The native parser process keeps Node's event loop alive. Detach it so test runs can exit.
+    const child = (api as unknown as { client?: { channel?: { child?: { unref(): void } } } }).client?.channel?.child;
+    child?.unref();
+    process.once('exit', () => api.close());
+    parser = { api, vfs, opened: false };
+  } else {
+    parser.vfs.writeFile(virtualFile, content);
+  }
+
+  const snapshot = parser.opened
+    ? parser.api.updateSnapshot({ fileChanges: { changed: [virtualFile] } })
+    : parser.api.updateSnapshot({ openProjects: [virtualConfig] });
+  parser.opened = true;
+  const sourceFile = snapshot.getProjects()[0]?.program.getSourceFile(virtualFile);
+  if (!sourceFile) {
+    snapshot.dispose();
+    throw new Error('Failed to parse <script setup> with the TypeScript parser');
+  }
+  return { sourceFile, release: () => snapshot.dispose() };
+}
+
 export function analyzeScriptSetup(
   file: string,
   fullText: string,
   script: { content: string; offset: number },
 ): ScriptAnalysis {
-  const sf = ts.createSourceFile(`${file}.ts`, script.content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+  const parsed = parseScript(script.content);
+  try {
+    return analyzeParsedScript(file, fullText, script, parsed.sourceFile);
+  } finally {
+    parsed.release();
+  }
+}
+
+function analyzeParsedScript(
+  file: string,
+  fullText: string,
+  script: { content: string; offset: number },
+  sf: ts.SourceFile,
+): ScriptAnalysis {
   const states: StateSemantic[] = [];
   const functions: FunctionSemantic[] = [];
   const imports: ImportSemantic[] = [];
   const diagnostics: ScriptAnalysis['diagnostics'] = [];
 
-  function srcRef(node: import('typescript').Node, kind: string, name: string): SourceRef {
+  function srcRef(node: ts.Node, kind: string, name: string): SourceRef {
     const start = script.offset + node.getStart(sf);
     const end = script.offset + node.getEnd();
     const range = {
@@ -59,7 +110,7 @@ export function analyzeScriptSetup(
     });
   }
 
-  sf.forEachChild((node: import('typescript').Node) => {
+  sf.forEachChild((node: ts.Node) => {
     if (ts.isImportDeclaration(node)) {
       const spec = node.importClause;
       if (spec) {
@@ -101,8 +152,8 @@ export function analyzeScriptSetup(
             id: decl.name.text,
             name: decl.name.text,
             source: srcRef(decl, 'function', decl.name.text),
-            async: initializer.modifiers?.some((m: import('typescript').ModifierLike) => m.kind === ts.SyntaxKind.AsyncKeyword) ?? false,
-            parameters: initializer.parameters.map((p: import('typescript').ParameterDeclaration) => p.name.getText(sf)),
+            async: initializer.modifiers?.some((m: ts.ModifierLike) => m.kind === ts.SyntaxKind.AsyncKeyword) ?? false,
+            parameters: initializer.parameters.map((p: ts.ParameterDeclaration) => p.name.getText(sf)),
           });
         }
       }
@@ -114,7 +165,7 @@ export function analyzeScriptSetup(
         name: node.name.text,
         source: srcRef(node, 'function', node.name.text),
         async: node.modifiers?.some((m) => m.kind === ts.SyntaxKind.AsyncKeyword) ?? false,
-        parameters: node.parameters.map((p: import('typescript').ParameterDeclaration) => p.name.getText(sf)),
+        parameters: node.parameters.map((p: ts.ParameterDeclaration) => p.name.getText(sf)),
       });
       return;
     }
@@ -125,8 +176,8 @@ export function analyzeScriptSetup(
           id: decl.name.text,
           name: decl.name.text,
           source: srcRef(decl, 'function', decl.name.text),
-          async: decl.initializer.modifiers?.some((m: import('typescript').ModifierLike) => m.kind === ts.SyntaxKind.AsyncKeyword) ?? false,
-          parameters: decl.initializer.parameters.map((p: import('typescript').ParameterDeclaration) => p.name.getText(sf)),
+          async: decl.initializer.modifiers?.some((m: ts.ModifierLike) => m.kind === ts.SyntaxKind.AsyncKeyword) ?? false,
+          parameters: decl.initializer.parameters.map((p: ts.ParameterDeclaration) => p.name.getText(sf)),
         });
       }
     }

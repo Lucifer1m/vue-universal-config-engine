@@ -1,11 +1,14 @@
 install:
-	npm install
+	pnpm install
+
 
 test:
-	npm test
+	pnpm test
+
 
 typecheck:
-	npm run typecheck
+	pnpm run typecheck
+
 
 inspect:
-	npm run cli -- inspect fixtures/basic/UserList.vue
+	pnpm run cli -- inspect fixtures/basic/UserList.vue

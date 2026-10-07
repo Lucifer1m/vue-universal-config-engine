@@ -3,10 +3,18 @@
   "version": "0.1.0",
   "type": "module",
   "private": true,
-  "exports": {".": "./src/index.ts"},
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "types": "./src/index.ts",
-  "dependencies": {"@hcbridge/source-model":"0.1.0"},
+  "dependencies": {
+    "@hcbridge/source-model": "workspace:*"
+  },
   "devDependencies": {},
-  "scripts": {"typecheck": "tsc -p tsconfig.json"}
-  ,"files":["src"]
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "files": [
+    "src"
+  ]
 }

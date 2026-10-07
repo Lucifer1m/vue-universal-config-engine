@@ -30,29 +30,29 @@ MVP 锁定：Vue 3 + Vite + TypeScript + `<script setup>` + template。
 ## 快速开始
 
 ```bash
-npm install
-npm test
-npm run typecheck
-npm run inspect:fixture
-npm run analyze:fixture
+pnpm install
+pnpm test
+pnpm run typecheck
+pnpm run inspect:fixture
+pnpm run analyze:fixture
 ```
 
 ## CLI
 
 ```bash
-npm run cli -- init
-npm run cli -- analyze fixtures/basic/UserList.vue
-npm run cli -- inspect fixtures/basic/UserList.vue
-npm run cli -- plan fixtures/basic/UserList.vue fixtures/basic/change.json
-npm run cli -- plan fixtures/basic/UserList.vue fixtures/basic/change.json .hcbridge/patch.json
-npm run cli -- apply fixtures/basic/UserList.vue fixtures/basic/change.json
-npm run cli -- rollback fixtures/basic/UserList.vue .hcbridge/rollback/<inverse>.json
-npm run cli -- verify .
+pnpm run cli -- init
+pnpm run cli -- analyze fixtures/basic/UserList.vue
+pnpm run cli -- inspect fixtures/basic/UserList.vue
+pnpm run cli -- plan fixtures/basic/UserList.vue fixtures/basic/change.json
+pnpm run cli -- plan fixtures/basic/UserList.vue fixtures/basic/change.json .hcbridge/patch.json
+pnpm run cli -- apply fixtures/basic/UserList.vue fixtures/basic/change.json
+pnpm run cli -- rollback fixtures/basic/UserList.vue .hcbridge/rollback/<inverse>.json
+pnpm run cli -- verify .
 ```
 
 ## 版本策略
 
-这是工程 v0.1，不是稳定 API。核心协议一旦准备冻结，再单独发布 HCP 0.1 / Source Model 0.1 / Patch Plan 0.1。
+这是工程 v0.1，采用 pnpm workspace；当前不是稳定 API。核心协议一旦准备冻结，再单独发布 HCP 0.1 / Source Model 0.1 / Patch Plan 0.1。
 
 ## 设计原则
 
@@ -62,3 +62,15 @@ npm run cli -- verify .
 4. 看不懂的代码进入 Opaque，不猜
 5. LowCode Schema 只是 Projection
 6. Fixture 先于新能力
+
+## Package Manager
+
+本仓库统一使用 pnpm workspace 管理。当前工程固定 `pnpm@12.9.1`；pnpm 12 要求 Node.js 22.13+。
+
+安装依赖：
+
+```bash
+pnpm install
+```
+
+建议团队统一使用项目声明的 `pnpm@12.9.1`，避免不同 pnpm 主版本导致 lockfile 或 workspace 行为差异。
