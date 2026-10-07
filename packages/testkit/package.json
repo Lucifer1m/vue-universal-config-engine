@@ -8,9 +8,11 @@
   },
   "types": "./src/index.ts",
   "dependencies": {
+    "@hcbridge/capability-registry": "workspace:*",
     "@hcbridge/hcp": "workspace:*",
     "@hcbridge/patch-engine": "workspace:*",
     "@hcbridge/semantic-graph": "workspace:*",
+    "@hcbridge/ts-analyzer": "workspace:*",
     "@hcbridge/vue-parser": "workspace:*"
   },
   "devDependencies": {},

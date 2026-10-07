@@ -19,7 +19,8 @@ export interface PatchOperation {
 }
 
 export interface PatchPlan {
-  version: '0.1';
+  version: '0.2';
+  sourceHash: string;
   operations: PatchOperation[];
   inverse: PatchOperation[];
   diagnostics: { severity: 'warning' | 'error'; code: string; message: string }[];
@@ -32,7 +33,12 @@ export interface ApplyResult {
   inversePlan: PatchPlan;
 }
 
+export function createEmptyPatchPlan(sourceHash = ''): PatchPlan {
+  return { version: '0.2', sourceHash, operations: [], inverse: [], diagnostics: [] };
+}
+
 export function createPatchPlan(parsed: ParsedSfc, change: ChangeSet): PatchPlan {
+  const base = createEmptyPatchPlan(sha256(parsed.text));
   const node = findTemplateNode(parsed, change.nodeId);
   if (!node) return failure('NODE_NOT_FOUND', `Node ${change.nodeId} not found.`);
 
@@ -45,7 +51,7 @@ export function createPatchPlan(parsed: ParsedSfc, change: ChangeSet): PatchPlan
     case 'remove-prop': return planRemoveProp(parsed, node, change.target);
     case 'delete-node': return planDeleteNode(parsed, node);
     case 'insert-child': return planInsertChild(parsed, node, change.value, change.target || 'append');
-    default: return failure('UNSUPPORTED_OPERATION', `Unsupported operation: ${(change as ChangeSet).operation}`);
+    default: return failure('UNSUPPORTED_OPERATION', `Unsupported operation: ${String((change as ChangeSet).operation)}`);
   }
 }
 
@@ -56,42 +62,41 @@ function planSetText(parsed: ParsedSfc, node: ParsedTemplateNode, value: string)
 }
 
 function planSetBinding(parsed: ParsedSfc, node: ParsedTemplateNode, target: string, value: string): PatchPlan {
-  const attr = node.attributes.find((a) => a.kind === 'directive' && ((a.name === 'bind' && a.arg === target) || (a.name === 'model' && target === 'model')));
+  const model = target === 'model' || target === 'modelValue';
+  const attr = node.attributes.find((a) => a.kind === 'directive' && ((a.name === 'bind' && a.arg === target) || (a.name === 'model' && model)));
   if (attr?.valueRange) return singleReplace(parsed, node.nodeId, attr.valueRange, value, `set-binding:${target}`);
   if (attr && !attr.valueRange) return failure('BINDING_VALUE_UNSUPPORTED', `Binding ${target} has no expression value.`);
-  const insertion = openingTagInsertion(parsed, node, ` :${target}=${quote(value)}`);
-  return singleInsert(parsed, node.nodeId, insertion, `set-binding:${target}`);
+  const insertion = model ? ` v-model=${quote(value)}` : ` :${target}=${quote(value)}`;
+  return singleInsert(parsed, node.nodeId, openingTagInsertion(parsed, node, insertion), `set-binding:${target}`, insertion);
 }
 
 function planSetEvent(parsed: ParsedSfc, node: ParsedTemplateNode, target: string, value: string): PatchPlan {
   const attr = node.attributes.find((a) => a.kind === 'directive' && a.name === 'on' && a.arg === target);
   if (attr?.valueRange) return singleReplace(parsed, node.nodeId, attr.valueRange, value, `set-event:${target}`);
-  const insertion = openingTagInsertion(parsed, node, ` @${target}=${quote(value)}`);
-  return singleInsert(parsed, node.nodeId, insertion, `set-event:${target}`);
+  const insertion = ` @${target}=${quote(value)}`;
+  return singleInsert(parsed, node.nodeId, openingTagInsertion(parsed, node, insertion), `set-event:${target}`, insertion);
 }
 
 function planSetDirective(parsed: ParsedSfc, node: ParsedTemplateNode, directive: string, value: string): PatchPlan {
-  const attr = node.attributes.find((a) => a.kind === 'directive' && a.name === directive);
+  const attr = node.attributes.find((a) => a.kind === 'directive' && a.name === directive && !a.arg);
   if (attr?.valueRange) return singleReplace(parsed, node.nodeId, attr.valueRange, value, `set-${directive}`);
-  const insertion = openingTagInsertion(parsed, node, ` v-${directive}=${quote(value)}`);
-  return singleInsert(parsed, node.nodeId, insertion, `set-${directive}`);
+  const insertion = ` v-${directive}=${quote(value)}`;
+  return singleInsert(parsed, node.nodeId, openingTagInsertion(parsed, node, insertion), `set-${directive}`, insertion);
 }
 
 function planSetProp(parsed: ParsedSfc, node: ParsedTemplateNode, target: string, value: string): PatchPlan {
   const attr = node.attributes.find((a) => a.kind === 'attribute' && a.name === target);
   if (attr?.valueRange) return singleReplace(parsed, node.nodeId, attr.valueRange, value, `set-prop:${target}`);
-  if (attr && !attr.valueRange) {
-    const range = attr.range;
-    const raw = parsed.text.slice(range.start.offset, range.end.offset);
-    const replacement = `${target}=${quote(value)}`;
-    return singleReplace(parsed, node.nodeId, range, replacement, `set-prop:${target}`);
-  }
-  const insertion = openingTagInsertion(parsed, node, ` ${target}=${quote(value)}`);
-  return singleInsert(parsed, node.nodeId, insertion, `set-prop:${target}`);
+  if (attr) return singleReplace(parsed, node.nodeId, attr.range, `${target}=${quote(value)}`, `set-prop:${target}`);
+  const insertion = ` ${target}=${quote(value)}`;
+  return singleInsert(parsed, node.nodeId, openingTagInsertion(parsed, node, insertion), `set-prop:${target}`, insertion);
 }
 
 function planRemoveProp(parsed: ParsedSfc, node: ParsedTemplateNode, target: string): PatchPlan {
-  const attr = node.attributes.find((a) => (a.kind === 'attribute' && a.name === target) || (a.kind === 'directive' && a.arg === target));
+  const attr = node.attributes.find((a) =>
+    (a.kind === 'attribute' && a.name === target) ||
+    (a.kind === 'directive' && ((a.name === 'bind' && a.arg === target) || (a.name === 'model' && target === 'model'))),
+  );
   if (!attr) return failure('PROP_NOT_FOUND', `Prop ${target} not found on ${node.nodeId}.`);
   return singleDelete(parsed, node.nodeId, attr.range, `remove-prop:${target}`);
 }
@@ -102,13 +107,13 @@ function planDeleteNode(parsed: ParsedSfc, node: ParsedTemplateNode): PatchPlan 
 }
 
 function planInsertChild(parsed: ParsedSfc, node: ParsedTemplateNode, childSource: string, position: string): PatchPlan {
+  if (!childSource.trim()) return failure('EMPTY_CHILD', 'insert-child requires non-empty Vue template source.');
   if (node.kind === 'root') {
-    const rootChildren = node.children;
-    const offset = position === 'prepend'
-      ? (rootChildren[0]?.range.start.offset ?? parsed.template.range.end.offset)
-      : parsed.template.range.end.offset;
-    const range = { start: { ...parsed.template.range.start, offset }, end: { ...parsed.template.range.start, offset } };
-    return singleInsert(parsed, node.nodeId, range, 'insert-child', childSource);
+    const first = node.children[0];
+    const offset = position === 'prepend' ? (first?.range.start.offset ?? parsed.template.range.end.offset) : parsed.template.range.end.offset;
+    const range = emptyRange(parsed.text, offset);
+    const text = position === 'prepend' ? `${childSource}\n` : `\n${childSource}`;
+    return singleInsert(parsed, node.nodeId, range, 'insert-child', text);
   }
   const openingEnd = findOpeningTagEnd(parsed.text, node.range.start.offset, node.range.end.offset);
   if (openingEnd < 0) return failure('OPENING_TAG_NOT_FOUND', `Cannot locate opening tag for ${node.nodeId}.`);
@@ -116,27 +121,26 @@ function planInsertChild(parsed: ParsedSfc, node: ParsedTemplateNode, childSourc
   if (closingStart < 0 || closingStart < openingEnd) return failure('CLOSING_TAG_NOT_FOUND', `Cannot locate closing tag for ${node.nodeId}.`);
   const offset = position === 'prepend' ? openingEnd + 1 : closingStart;
   const text = position === 'prepend' ? `\n${childSource}` : `${childSource}\n`;
-  const range = { start: { ...parsed.template.range.start, offset }, end: { ...parsed.template.range.start, offset } };
-  return singleInsert(parsed, node.nodeId, range, 'insert-child', text);
+  return singleInsert(parsed, node.nodeId, emptyRange(parsed.text, offset), 'insert-child', text);
 }
 
 function singleReplace(parsed: ParsedSfc, nodeId: string, range: SourceRange, newText: string, precondition: string): PatchPlan {
   const oldText = parsed.text.slice(range.start.offset, range.end.offset);
-  return makePlan(parsed.file, nodeId, 'replace', range, oldText, newText, precondition);
+  return makePlan(parsed, nodeId, 'replace', range, oldText, newText, precondition);
 }
 
-function singleInsert(parsed: ParsedSfc, nodeId: string, range: SourceRange, precondition: string, newText?: string): PatchPlan {
-  return makePlan(parsed.file, nodeId, 'insert', range, '', newText ?? precondition, precondition);
+function singleInsert(parsed: ParsedSfc, nodeId: string, range: SourceRange, precondition: string, newText: string): PatchPlan {
+  return makePlan(parsed, nodeId, 'insert', range, '', newText, precondition);
 }
 
 function singleDelete(parsed: ParsedSfc, nodeId: string, range: SourceRange, precondition: string): PatchPlan {
   const oldText = parsed.text.slice(range.start.offset, range.end.offset);
-  return makePlan(parsed.file, nodeId, 'delete', range, oldText, '', precondition);
+  return makePlan(parsed, nodeId, 'delete', range, oldText, '', precondition);
 }
 
-function makePlan(file: string, nodeId: string, kind: PatchKind, range: SourceRange, oldText: string, newText: string, precondition: string): PatchPlan {
+function makePlan(parsed: ParsedSfc, nodeId: string, kind: PatchKind, range: SourceRange, oldText: string, newText: string, precondition: string): PatchPlan {
   const op: PatchOperation = {
-    file,
+    file: parsed.file,
     nodeId,
     kind,
     range,
@@ -145,25 +149,26 @@ function makePlan(file: string, nodeId: string, kind: PatchKind, range: SourceRa
     newText,
     oldText,
   };
-  return { version: '0.1', operations: [op], inverse: [], diagnostics: [] };
+  return { version: '0.2', sourceHash: sha256(parsed.text), operations: [op], inverse: [], diagnostics: [] };
 }
 
 export function mergePatchPlans(plans: PatchPlan[]): PatchPlan {
+  const sourceHash = plans.find((p) => p.sourceHash)?.sourceHash ?? '';
   const operations = plans.flatMap((p) => p.operations);
   const diagnostics = plans.flatMap((p) => p.diagnostics);
   const overlap = findOverlaps(operations);
   if (overlap) diagnostics.push({ severity: 'error', code: 'OVERLAPPING_PATCHES', message: `Overlapping patch ranges for ${overlap.a.nodeId} and ${overlap.b.nodeId}.` });
-  return { version: '0.1', operations, inverse: [], diagnostics };
+  return { version: '0.2', sourceHash, operations, inverse: [], diagnostics };
 }
 
 export function applyPatchPlan(parsed: ParsedSfc, plan: PatchPlan): ApplyResult {
   if (plan.diagnostics.some((d) => d.severity === 'error')) throw new Error('Patch plan contains errors.');
+  if (plan.sourceHash && plan.sourceHash !== sha256(parsed.text)) throw new Error(`PATCH_SOURCE_PRECONDITION_FAILED: ${parsed.file}`);
   if (plan.operations.some((op) => op.file !== parsed.file)) throw new Error('PATCH_FILE_MISMATCH');
   const overlap = findOverlaps(plan.operations);
   if (overlap) throw new Error(`OVERLAPPING_PATCHES: ${overlap.a.nodeId} ${overlap.b.nodeId}`);
 
   const operations = [...plan.operations].sort((a, b) => b.range.start.offset - a.range.start.offset);
-  const inverse: PatchOperation[] = [];
   const ms = new MagicString(parsed.text);
   for (const op of operations) {
     const current = parsed.text.slice(op.range.start.offset, op.range.end.offset);
@@ -172,40 +177,48 @@ export function applyPatchPlan(parsed: ParsedSfc, plan: PatchPlan): ApplyResult 
     else if (op.kind === 'delete') ms.remove(op.range.start.offset, op.range.end.offset);
     else ms.overwrite(op.range.start.offset, op.range.end.offset, op.newText);
   }
+
   const text = ms.toString();
-
-  // Rebuild inverse ranges against the final document so different-length replacements and inserts rollback safely.
-  for (const op of [...operations].sort((a, b) => a.range.start.offset - b.range.start.offset)) {
-    const oldLength = op.range.end.offset - op.range.start.offset;
-    const deltaBefore = operations.reduce((sum, other) => {
-      if (other.range.start.offset < op.range.start.offset) {
-        return sum + other.newText.length - (other.range.end.offset - other.range.start.offset);
-      }
-      return sum;
-    }, 0);
-    const finalStart = op.range.start.offset + deltaBefore;
-    const finalEnd = finalStart + op.newText.length;
-    const range = makeRangeLike(parsed.text, finalStart, finalEnd);
-    inverse.push({
-      ...op,
-      kind: op.newText.length === 0 ? 'delete' : 'replace',
-      range,
-      oldTextHash: sha256(op.newText),
-      newText: op.oldText ?? parsed.text.slice(op.range.start.offset, op.range.end.offset),
-    });
-    void oldLength;
-  }
-
+  const inverse = buildInverse(operations);
   return {
     changed: text !== parsed.text,
     text,
     gitDiff: unifiedDiff(parsed.text, text, parsed.file),
-    inversePlan: { version: '0.1', operations: inverse.reverse(), inverse: [], diagnostics: [] },
+    inversePlan: {
+      version: '0.2',
+      sourceHash: sha256(text),
+      operations: inverse,
+      inverse: operations,
+      diagnostics: [],
+    },
   };
 }
 
+function buildInverse(operations: PatchOperation[]): PatchOperation[] {
+  const ascending = [...operations].sort((a, b) => a.range.start.offset - b.range.start.offset);
+  const inverses: PatchOperation[] = [];
+  for (const op of ascending) {
+    const deltaBefore = ascending
+      .filter((other) => other !== op && other.range.start.offset < op.range.start.offset)
+      .reduce((sum, other) => sum + other.newText.length - (other.range.end.offset - other.range.start.offset), 0);
+    const finalStart = op.range.start.offset + deltaBefore;
+    const finalLength = op.newText.length;
+    const finalRange = makeRangeLike('', finalStart, finalStart + finalLength);
+    if (op.kind === 'insert') {
+      inverses.push({ ...op, kind: 'delete', range: finalRange, oldTextHash: sha256(op.newText), newText: '', oldText: op.newText });
+    } else if (op.kind === 'delete') {
+      const point = makeRangeLike('', finalStart, finalStart);
+      inverses.push({ ...op, kind: 'insert', range: point, oldTextHash: sha256(''), newText: op.oldText ?? '', oldText: '' });
+    } else {
+      inverses.push({ ...op, kind: 'replace', range: finalRange, oldTextHash: sha256(op.newText), newText: op.oldText ?? '', oldText: op.newText });
+    }
+  }
+  return inverses.sort((a, b) => b.range.start.offset - a.range.start.offset);
+}
+
 export function applyPatchToFile(file: string, plan: PatchPlan): ApplyResult {
-  const parsed = parseVueSfc(file, fs.readFileSync(file, 'utf8'));
+  const text = fs.readFileSync(file, 'utf8');
+  const parsed = parseVueSfc(file, text);
   const result = applyPatchPlan(parsed, plan);
   if (result.changed) fs.writeFileSync(file, result.text, 'utf8');
   return result;
@@ -215,21 +228,18 @@ export function rollbackFile(file: string, inverse: PatchPlan): ApplyResult {
   return applyPatchToFile(file, inverse);
 }
 
-function openingTagInsertion(parsed: ParsedSfc, node: ParsedTemplateNode, text: string): SourceRange {
+function openingTagInsertion(parsed: ParsedSfc, node: ParsedTemplateNode, _text: string): SourceRange {
   const end = findOpeningTagEnd(parsed.text, node.range.start.offset, node.range.end.offset);
   if (end < 0) throw new Error(`OPENING_TAG_NOT_FOUND: ${node.nodeId}`);
   const at = parsed.text[end] === '/' ? end - 1 : end;
-  return makeRangeLike(parsed.text, at, at);
+  return emptyRange(parsed.text, at);
 }
 
 function findOpeningTagEnd(text: string, start: number, end: number): number {
   let quote: string | undefined;
-  for (let i = start; i < end; i++) {
+  for (let i = start; i < end; i += 1) {
     const char = text[i];
-    if (quote) {
-      if (char === quote) quote = undefined;
-      continue;
-    }
+    if (quote) { if (char === quote) quote = undefined; continue; }
     if (char === '"' || char === "'") quote = char;
     else if (char === '>') return i;
   }
@@ -242,18 +252,20 @@ function quote(value: string): string {
   throw new Error('ATTRIBUTE_QUOTE_UNSUPPORTED: value contains both quote styles.');
 }
 
-function makeRangeLike(text: string, start: number, end: number): SourceRange {
-  const position = (offset: number) => {
-    const before = text.slice(0, offset);
-    const last = before.lastIndexOf('\n');
-    return { offset, line: before.split('\n').length, column: last < 0 ? offset : offset - last - 1 };
+function emptyRange(_text: string, offset: number): SourceRange {
+  return makeRangeLike('', offset, offset);
+}
+
+function makeRangeLike(_text: string, start: number, end: number): SourceRange {
+  return {
+    start: { offset: start, line: 0, column: 0 },
+    end: { offset: end, line: 0, column: 0 },
   };
-  return { start: position(start), end: position(end) };
 }
 
 function findOverlaps(operations: PatchOperation[]): { a: PatchOperation; b: PatchOperation } | undefined {
   const sorted = [...operations].sort((a, b) => a.range.start.offset - b.range.start.offset || a.range.end.offset - b.range.end.offset);
-  for (let i = 1; i < sorted.length; i++) {
+  for (let i = 1; i < sorted.length; i += 1) {
     const prev = sorted[i - 1]!;
     const current = sorted[i]!;
     const samePoint = prev.range.start.offset === prev.range.end.offset && current.range.start.offset === current.range.end.offset;
@@ -264,23 +276,21 @@ function findOverlaps(operations: PatchOperation[]): { a: PatchOperation; b: Pat
 }
 
 function failure(code: string, message: string): PatchPlan {
-  return { version: '0.1', operations: [], inverse: [], diagnostics: [{ severity: 'error', code, message }] };
+  return { version: '0.2', sourceHash: '', operations: [], inverse: [], diagnostics: [{ severity: 'error', code, message }] };
 }
 
-function sha256(text: string): string {
-  return crypto.createHash('sha256').update(text).digest('hex');
-}
+function sha256(text: string): string { return crypto.createHash('sha256').update(text).digest('hex'); }
 
 function unifiedDiff(before: string, after: string, file: string): string {
   if (before === after) return '';
   const a = before.split('\n');
   const b = after.split('\n');
   let start = 0;
-  while (start < a.length && start < b.length && a[start] === b[start]) start++;
+  while (start < a.length && start < b.length && a[start] === b[start]) start += 1;
   let endA = a.length - 1;
   let endB = b.length - 1;
-  while (endA >= start && endB >= start && a[endA] === b[endB]) { endA--; endB--; }
-  const removed = a.slice(start, endA + 1).map((l) => `-${l}`).join('\n');
-  const added = b.slice(start, endB + 1).map((l) => `+${l}`).join('\n');
+  while (endA >= start && endB >= start && a[endA] === b[endB]) { endA -= 1; endB -= 1; }
+  const removed = a.slice(start, endA + 1).map((line) => `-${line}`).join('\n');
+  const added = b.slice(start, endB + 1).map((line) => `+${line}`).join('\n');
   return `--- a/${file}\n+++ b/${file}\n@@ lines ${start + 1}..${Math.max(endA + 1, endB + 1)} @@\n${removed}\n${added}`;
 }

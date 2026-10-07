@@ -196,6 +196,9 @@ importers:
       '@hcbridge/capability-registry':
         specifier: workspace:*
         version: link:../../packages/capability-registry
+      '@hcbridge/evolution-engine':
+        specifier: workspace:*
+        version: link:../../packages/evolution-engine
       '@hcbridge/hcp':
         specifier: workspace:*
         version: link:../../packages/hcp
@@ -254,11 +257,47 @@ importers:
 
   packages/capability-registry: {}
 
+  packages/component-resolver:
+    dependencies:
+      '@hcbridge/ts-analyzer':
+        specifier: workspace:*
+        version: link:../ts-analyzer
+
+  packages/evolution-engine:
+    dependencies:
+      '@hcbridge/capability-registry':
+        specifier: workspace:*
+        version: link:../capability-registry
+      '@hcbridge/component-resolver':
+        specifier: workspace:*
+        version: link:../component-resolver
+      '@hcbridge/hcp':
+        specifier: workspace:*
+        version: link:../hcp
+      '@hcbridge/patch-engine':
+        specifier: workspace:*
+        version: link:../patch-engine
+      '@hcbridge/semantic-graph':
+        specifier: workspace:*
+        version: link:../semantic-graph
+      '@hcbridge/ts-analyzer':
+        specifier: workspace:*
+        version: link:../ts-analyzer
+      '@hcbridge/verifier':
+        specifier: workspace:*
+        version: link:../verifier
+      '@hcbridge/vue-parser':
+        specifier: workspace:*
+        version: link:../vue-parser
+
   packages/hcp:
     dependencies:
       '@hcbridge/capability-registry':
         specifier: workspace:*
         version: link:../capability-registry
+      '@hcbridge/component-resolver':
+        specifier: workspace:*
+        version: link:../component-resolver
       '@hcbridge/semantic-graph':
         specifier: workspace:*
         version: link:../semantic-graph
@@ -357,8 +396,8 @@ importers:
         specifier: workspace:*
         version: link:../source-model
       typescript:
-        specifier: 7.0.2
-        version: 7.0.2
+        specifier: npm:typescript@5.9.3
+        version: 5.9.3
 
   packages/verifier:
     dependencies:
@@ -1156,6 +1195,11 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
     engines: {node: '>=16.20.0'}
@@ -1863,6 +1907,8 @@ snapshots:
       esbuild: 0.28.2
     optionalDependencies:
       fsevents: 2.3.3
+
+  typescript@5.9.3: {}
 
   typescript@7.0.2:
     optionalDependencies:

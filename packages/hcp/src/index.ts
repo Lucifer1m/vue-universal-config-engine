@@ -1,6 +1,7 @@
 import type { SemanticGraph } from '@hcbridge/semantic-graph';
 import type { SourceRef, SemanticMode, Ownership } from '@hcbridge/source-model';
 import type { ComponentCapabilityMeta } from '@hcbridge/capability-registry';
+import type { ComponentResolution } from '@hcbridge/component-resolver';
 
 export type HcpCapabilityType = 'prop' | 'binding' | 'event' | 'slot' | 'style' | 'visibility' | 'data' | 'action' | 'permission' | 'custom';
 
@@ -28,6 +29,7 @@ export interface HcpNode {
   capabilities: Capability[];
   children: string[];
   mode: SemanticMode;
+  resolution?: ComponentResolution;
 }
 
 export interface HcpProject {
@@ -37,7 +39,15 @@ export interface HcpProject {
   diagnostics: SemanticGraph['diagnostics'];
 }
 
-export type ChangeOperation = 'set-prop' | 'remove-prop' | 'set-text' | 'set-binding' | 'set-event' | 'set-visibility' | 'delete-node' | 'insert-child';
+export type ChangeOperation =
+  | 'set-prop'
+  | 'remove-prop'
+  | 'set-text'
+  | 'set-binding'
+  | 'set-event'
+  | 'set-visibility'
+  | 'delete-node'
+  | 'insert-child';
 
 export interface ChangeSet {
   file: string;
@@ -50,6 +60,7 @@ export interface ChangeSet {
 export function projectToHcp(
   graph: SemanticGraph,
   resolveMeta: (name: string) => ComponentCapabilityMeta | undefined,
+  resolutions: Map<string, ComponentResolution> = new Map(),
 ): HcpProject {
   const componentById = new Map(graph.components.map((component) => [component.nodeId, component]));
   const nodes: HcpNode[] = graph.templateNodes.map((templateNode) => {
@@ -60,40 +71,126 @@ export function projectToHcp(
     if (component) {
       for (const [name, prop] of Object.entries(component.props)) {
         capabilities.push({
-          type: 'prop', name, editable: true,
+          type: 'prop',
+          name,
+          editable: true,
           value: prop.staticValue !== undefined ? { kind: 'literal', value: prop.staticValue } : { kind: 'unknown', value: '' },
-          confidence: meta?.props[name] ? 0.99 : 0.92,
-          ownership: 'PLATFORM', source: prop.source,
+          confidence: meta?.props[name] ? 0.99 : 0.90,
+          ownership: 'PLATFORM',
+          source: prop.source,
         });
       }
       for (const [name, event] of Object.entries(component.events)) {
-        capabilities.push({ type: 'event', name, editable: false, value: { kind: 'symbol', value: event.handler ?? null }, confidence: event.handler ? 0.98 : 0.8, ownership: 'CODE', source: event.source });
+        capabilities.push({
+          type: 'event',
+          name,
+          editable: true,
+          value: { kind: 'symbol', value: event.handler ?? null },
+          confidence: event.handler ? 0.98 : 0.82,
+          ownership: 'SHARED',
+          source: event.source,
+        });
       }
       if (meta?.blackBox) {
-        return { id: templateNode.nodeId, kind: 'component', tag: templateNode.tag, source: [templateNode.source], capabilities, children: templateNode.children, mode: 'blackbox' };
+        return {
+          id: templateNode.nodeId,
+          kind: 'component',
+          tag: templateNode.tag,
+          source: [templateNode.source],
+          capabilities,
+          children: templateNode.children,
+          mode: 'blackbox',
+          resolution: resolutions.get(component.name),
+        };
       }
     }
 
     if (templateNode.kind === 'text') {
-      capabilities.push({ type: 'custom', name: 'text', editable: true, value: { kind: 'unknown', value: '' }, confidence: 0.99, ownership: 'PLATFORM', source: templateNode.source });
+      capabilities.push({
+        type: 'custom',
+        name: 'text',
+        editable: true,
+        value: { kind: 'literal', value: '' },
+        confidence: 0.99,
+        ownership: 'PLATFORM',
+        source: templateNode.source,
+      });
+    }
+
+    if (templateNode.kind === 'element') {
+      for (const attr of templateNode.attributes) {
+        capabilities.push({
+          type: attr.name === 'class' || attr.name === 'style' ? 'style' : 'prop',
+          name: attr.name,
+          editable: true,
+          value: { kind: 'literal', value: attr.value ?? true },
+          confidence: 0.96,
+          ownership: 'PLATFORM',
+          source: attr.source,
+        });
+      }
     }
 
     for (const directive of templateNode.directives) {
       if (directive.name === 'if' || directive.name === 'for') {
-        capabilities.push({ type: 'visibility', name: directive.name, editable: false, value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'unknown', value: '' }, confidence: 0.98, ownership: 'CODE', source: directive.source });
+        capabilities.push({
+          type: 'visibility',
+          name: directive.name,
+          editable: false,
+          value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'unknown', value: '' },
+          confidence: 0.98,
+          ownership: 'CODE',
+          source: directive.source,
+        });
       }
       if (directive.name === 'bind' || directive.name === 'model') {
-        capabilities.push({ type: 'binding', name: directive.arg ?? directive.name, editable: true, value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'unknown', value: '' }, confidence: 0.98, ownership: 'SHARED', source: directive.source });
+        capabilities.push({
+          type: 'binding',
+          name: directive.arg ?? directive.name,
+          editable: true,
+          value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'unknown', value: '' },
+          confidence: 0.98,
+          ownership: 'SHARED',
+          source: directive.source,
+        });
       }
       if (directive.name === 'on') {
-        capabilities.push({ type: 'event', name: directive.arg ?? 'unknown', editable: false, value: directive.expression ? { kind: 'symbol', value: directive.expression } : { kind: 'unknown', value: '' }, confidence: 0.95, ownership: 'CODE', source: directive.source });
+        capabilities.push({
+          type: 'event',
+          name: directive.arg ?? 'unknown',
+          editable: true,
+          value: directive.expression ? { kind: 'symbol', value: directive.expression } : { kind: 'unknown', value: '' },
+          confidence: 0.95,
+          ownership: 'SHARED',
+          source: directive.source,
+        });
       }
       if (directive.name === 'slot') {
-        capabilities.push({ type: 'slot', name: directive.arg ?? 'default', editable: false, value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'symbol', value: 'default' }, confidence: 0.9, ownership: 'CODE', source: directive.source });
+        capabilities.push({
+          type: 'slot',
+          name: directive.arg ?? 'default',
+          editable: false,
+          value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'symbol', value: 'default' },
+          confidence: 0.90,
+          ownership: 'CODE',
+          source: directive.source,
+        });
       }
       if (directive.name === 'style' || directive.name === 'class') {
-        capabilities.push({ type: 'style', name: directive.name, editable: true, value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'unknown', value: '' }, confidence: 0.9, ownership: 'SHARED', source: directive.source });
+        capabilities.push({
+          type: 'style',
+          name: directive.name,
+          editable: true,
+          value: directive.expression ? { kind: 'expression', value: directive.expression } : { kind: 'literal', value: '' },
+          confidence: 0.90,
+          ownership: 'SHARED',
+          source: directive.source,
+        });
       }
+    }
+
+    for (const attr of findNativeAttributes(graph, templateNode.nodeId, capabilities)) {
+      capabilities.push(attr);
     }
 
     return {
@@ -104,7 +201,31 @@ export function projectToHcp(
       capabilities,
       children: templateNode.children,
       mode: component ? (meta ? 'structured' : 'blackbox') : 'structured',
+      resolution: component ? resolutions.get(component.name) : undefined,
     };
   });
   return { version: '0.1', sourceFiles: [], nodes, diagnostics: graph.diagnostics };
 }
+
+function findNativeAttributes(graph: SemanticGraph, nodeId: string, existing: Capability[]): Capability[] {
+  const node = graph.templateNodes.find((item) => item.nodeId === nodeId);
+  if (!node) return [];
+  const known = new Set(existing.map((item) => item.name));
+  const added: Capability[] = [];
+  for (const attr of node.attributes) {
+    if (known.has(attr.name)) continue;
+    known.add(attr.name);
+    const type: Capability['type'] = attr.name === 'class' || attr.name === 'style' ? 'style' : 'prop';
+    added.push({
+      type,
+      name: attr.name,
+      editable: true,
+      value: { kind: 'literal', value: attr.value ?? true },
+      confidence: 0.9,
+      ownership: 'PLATFORM',
+      source: attr.source,
+    });
+  }
+  return added;
+}
+

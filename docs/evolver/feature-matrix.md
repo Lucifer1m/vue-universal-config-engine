@@ -1,36 +1,42 @@
-# Evolver Feature Matrix
+# Evolver Feature Matrix v0.3
 
-| Capability | Status | Safety mode |
+| Capability | Status | Safety / Notes |
 |---|---|---|
 | Project scan | Implemented | Read-only |
-| Vue SFC parse | Implemented | Read-only |
-| Template AST inspection | Implemented | Read-only |
+| Project index | Implemented | `.hcbridge/index.json` |
+| Vue SFC parse | Implemented | `@vue/compiler-sfc` |
+| Template AST inspection | Implemented | `@vue/compiler-dom` |
+| `<script setup>` state scan | Implemented | `ref/reactive/computed/props/emits` |
+| Stable project-relative node ID | Implemented | Uses project-relative identity + structural evidence |
+| Component import resolution | Implemented | Relative imports + TSConfig paths |
 | Component metadata | Implemented | Registry + BlackBox |
-| HCP projection | Implemented | Read-only |
-| Static prop update | Implemented | Minimal Patch |
-| Static prop add | Implemented | Minimal Patch |
-| Prop/directive removal | Implemented | Minimal Patch |
-| `:prop` update/add | Implemented | Minimal Patch |
-| `v-model` update | Implemented | Minimal Patch |
-| `@event` update/add | Implemented | Minimal Patch |
-| `v-if` update/add | Implemented | Minimal Patch |
-| Text update | Implemented | Minimal Patch |
-| Child insertion | Implemented | Raw template fragment |
-| Node deletion | Implemented | Safe-reject on root/overlap |
-| Batch multi-file evolution | Implemented | Transaction + restore |
+| HCP projection | Implemented | Capability-oriented |
+| Static prop update | Implemented | SAFE |
+| Static prop add | Implemented | SAFE |
+| Prop/directive removal | Implemented | SAFE |
+| `:prop` update/add | Implemented | SAFE |
+| `v-model` update/add | Implemented | SAFE |
+| `@event` update/add | Implemented | SAFE |
+| `v-if` update/add | Implemented | RISKY |
+| Text update | Implemented | SAFE |
+| Child insertion | Implemented | ASSISTED |
+| Node deletion | Implemented | ASSISTED |
+| Batch multi-file evolution | Implemented | Transactional restore |
 | Precondition hash | Implemented | Mandatory |
 | Patch overlap detection | Implemented | Mandatory |
+| Source hash plan guard | Implemented | Mandatory |
 | Reparse verification | Implemented | Mandatory |
-| Project typecheck/build | Implemented | Optional; pnpm-first |
+| pnpm typecheck/build | Implemented | Optional strict gate |
 | Inverse patch / rollback | Implemented | Journaled |
-| Snapshot | Implemented | Read-only |
-| Snapshot drift status | Implemented | Read-only |
+| Evolution history | Implemented | `.hcbridge/history` |
+| Safety policy | Implemented | SAFE / ASSISTED / RISKY / REJECTED |
+| Snapshot drift | Implemented | Read-only |
 | Markdown report | Implemented | Read-only |
-| Runtime trace protocol | Protocol skeleton | No automatic injection yet |
-| Platform adapter | Protocol skeleton | Custom adapter required |
-| Three-way merge | Not in MVP | Planned |
-| Production runtime overlay | Not in MVP | Planned |
-| Nuxt | Detected only | No conversion promise |
-| JSX/render function | Not targeted | Opaque/unsupported |
-| Options API | Not targeted | Opaque/unsupported |
-| Arbitrary JS semantic lowering | Not targeted | Preserve / Opaque |
+| Runtime trace | Protocol skeleton | Later phase |
+| Platform adapter | Protocol skeleton | Later phase |
+| Three-way merge | Planned | Not automatic |
+| Runtime overlay | Planned | Only after no-op behavior is proven |
+| Nuxt | Detection only | Not promised |
+| JSX/render function | Unsupported | Opaque |
+| Options API | Unsupported | Opaque |
+| Arbitrary JS semantic lowering | Unsupported | Preserve / Opaque |

@@ -43,6 +43,7 @@ export interface TemplateNodeSemantic {
   parentNodeId?: string;
   children: string[];
   directives: { name: string; arg?: string; expression?: string; source: SourceRef }[];
+  attributes: { name: string; value?: string; source: SourceRef }[];
 }
 
 export interface SemanticGraph {
@@ -72,6 +73,11 @@ export function buildSemanticGraph(parsed: ParsedSfc, script: ScriptAnalysis): S
       source: nodeSource,
       parentNodeId: node.parentNodeId,
       children: node.children.map((child) => child.nodeId),
+      attributes: node.attributes.filter((attr) => attr.kind === 'attribute').map((attr) => ({
+        name: attr.name,
+        value: attr.value,
+        source: sourceRefForRange(parsed.file, parsed.text, attr.range, `${node.nodeId}:attr:${attr.name}`),
+      })),
       directives: node.directives.map((directive) => ({
         name: directive.name,
         arg: directive.arg,

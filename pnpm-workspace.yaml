@@ -2,3 +2,6 @@ packages:
   - apps/*
   - packages/*
   - examples/*
+allowBuilds:
+  core-js: false
+  esbuild: false

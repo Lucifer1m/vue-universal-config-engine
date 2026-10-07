@@ -10,11 +10,12 @@ import {
   createProjectSnapshot,
   compareSnapshot,
   detectProject,
+  rollbackJournal,
   type EvolutionChangeSet,
   type EvolutionPlan,
+  type SafetyLevel,
 } from '@hcbridge/evolution-engine';
 import { flattenTemplate, parseVueSfc } from '@hcbridge/vue-parser';
-import { createAntDesignVueRegistry } from '@hcbridge/capability-registry';
 import { createPatchPlan, applyPatchToFile } from '@hcbridge/patch-engine';
 import { verifyProject } from '@hcbridge/verifier';
 
@@ -27,12 +28,13 @@ try {
     case 'init': init(args[0] ?? '.'); break;
     case 'doctor': doctor(args[0] ?? '.'); break;
     case 'scan': scan(args[0] ?? '.'); break;
+    case 'index': index(args[0] ?? '.'); break;
     case 'analyze': analyze(args[0]); break;
     case 'inspect': inspect(args[0], args[1]); break;
     case 'capabilities': capabilities(args[0]); break;
     case 'plan': plan(args[0], args[1], args[2]); break;
     case 'apply': apply(args[0], args[1]); break;
-    case 'evolve': evolve(args[0] ?? '.', args[1]); break;
+    case 'evolve': evolve(args); break;
     case 'rollback': rollback(args[0], args[1]); break;
     case 'snapshot': snapshot(args[0] ?? '.', args[1]); break;
     case 'status': status(args[0] ?? '.', args[1]); break;
@@ -47,7 +49,7 @@ try {
 }
 
 function usage(code = 0): never {
-  console.log(`hcbridge - Vue 3 High-Code Evolver\n\nCommands:\n  init <projectDir>\n  doctor <projectDir>\n  scan <projectDir>\n  analyze <file>\n  inspect <file> [nodeId]\n  capabilities <file>\n  plan <file|projectDir> <changes.json> [out.json]\n  apply <file> <change.json>\n  evolve <projectDir> <changes.json>\n  rollback <file> <inverse.json>\n  snapshot <projectDir> [out.json]\n  verify <projectDir>\n  report <projectDir>\n\nChangeSet examples:\n  set-prop       existing or new static prop\n  remove-prop    remove attr/directive by target\n  set-binding    set or add :prop expression\n  set-event      set or add @event handler\n  set-visibility set or add v-if expression\n  set-text       replace direct text node\n  insert-child   append/prepend raw child template (target=append|prepend)\n  delete-node    delete a template node\n`);
+  console.log(`hcbridge - Vue 3 High-Code Evolver\n\nCommands:\n  init <projectDir>\n  doctor <projectDir>\n  scan <projectDir>\n  index <projectDir>\n  analyze <file>\n  inspect <file> [nodeId]\n  capabilities <file>\n  plan <file|projectDir> <changes.json> [out.json]\n  apply <file> <change.json>\n  evolve <projectDir> <changes.json> [--max-safety=SAFE|ASSISTED|RISKY|REJECTED] [--dry-run]\n  rollback <projectDir> <journal.json>\n  snapshot <projectDir> [out.json]\n  status <projectDir> [snapshot.json]\n  history <projectDir>\n  verify <projectDir>\n  report <projectDir>\n\nChangeSet operations:\n  set-prop       existing or new static prop\n  remove-prop    remove attr/directive by target\n  set-binding    set or add :prop / v-model expression\n  set-event      set or add @event handler\n  set-visibility set or add v-if expression (RISKY)\n  set-text       replace direct text node\n  insert-child   append/prepend raw child template (ASSISTED)\n  delete-node    delete a template node (ASSISTED)\n`);
   process.exit(code);
   throw new Error('unreachable');
 }
@@ -57,10 +59,10 @@ function init(projectDir: string) {
   const hc = path.join(dir, '.hcbridge');
   fs.mkdirSync(hc, { recursive: true });
   const config = {
-    version: '0.2',
+    version: '0.3',
     include: ['.'],
-    exclude: ['node_modules', 'dist', '.git', '.hcbridge'],
-    policy: { mode: 'safe-reject', autoPatchConfidence: 0.9 },
+    exclude: ['node_modules', 'dist', '.git', '.hcbridge', 'coverage'],
+    policy: { maxSafety: 'SAFE', stopOnFailure: true, verifyReparse: true, verifyTypecheck: false, verifyBuild: false },
     adapters: { platform: null, build: detectProject(dir).vite ? 'vite' : null },
   };
   fs.writeFileSync(path.join(hc, 'config.json'), `${JSON.stringify(config, null, 2)}\n`);
@@ -76,54 +78,34 @@ function doctor(projectDir: string) {
     vue: framework.vue,
     vite: framework.vite,
     nuxt: framework.nuxt,
+    typescript: framework.typescript,
     hcbridge: fs.existsSync(path.join(root, '.hcbridge')),
   };
   console.log(JSON.stringify({ projectRoot: root, framework, checks, ok: checks.packageJson && checks.vue }, null, 2));
 }
 
 function scan(projectDir: string) {
-  const root = path.resolve(projectDir);
-  const result = scanProject(root);
-  console.log(JSON.stringify({
-    projectRoot: result.projectRoot,
-    framework: result.framework,
-    generatedAt: result.generatedAt,
-    totals: result.totals,
-    files: result.files.map((f) => ({ file: f.relativeFile, sourceHash: f.sourceHash, metrics: f.metrics })),
-  }, null, 2));
+  const result = scanProject(path.resolve(projectDir));
+  console.log(JSON.stringify({ projectRoot: result.projectRoot, framework: result.framework, generatedAt: result.generatedAt, totals: result.totals, failedFiles: result.failedFiles, files: result.files.map((f) => ({ file: f.relativeFile, sourceHash: f.sourceHash, metrics: f.metrics })) }, null, 2));
+}
+
+function index(projectDir: string) {
+  const result = scanProject(path.resolve(projectDir));
+  const artifacts = writeProjectArtifacts(result);
+  console.log(JSON.stringify({ index: artifacts.index, snapshot: artifacts.snapshot, report: artifacts.report, totals: result.totals }, null, 2));
 }
 
 function analyze(file?: string) {
   assertFile(file);
   const result = analyzeVueFile(path.resolve(file!));
-  console.log(JSON.stringify({
-    file: result.file,
-    sourceHash: result.sourceHash,
-    metrics: result.metrics,
-    diagnostics: result.graph.diagnostics,
-    components: result.graph.components,
-    bindings: result.graph.bindings,
-    events: result.graph.events,
-    states: result.graph.states,
-    hcp: result.hcp,
-  }, null, 2));
+  console.log(JSON.stringify({ file: result.file, sourceHash: result.sourceHash, metrics: result.metrics, diagnostics: result.graph.diagnostics, components: result.graph.components, bindings: result.graph.bindings, events: result.graph.events, states: result.graph.states, resolutions: result.resolutions, hcp: result.hcp }, null, 2));
 }
 
 function inspect(file?: string, nodeId?: string) {
   assertFile(file);
   const result = analyzeVueFile(path.resolve(file!));
   if (!nodeId) {
-    console.log(JSON.stringify({
-      file: result.file,
-      nodes: flattenTemplate(result.parsed.template).map((n) => ({
-        id: n.nodeId,
-        kind: n.kind,
-        tag: n.tag,
-        path: n.structuralPath,
-        range: n.range,
-        source: n.sourceText,
-      })),
-    }, null, 2));
+    console.log(JSON.stringify({ file: result.file, nodes: flattenTemplate(result.parsed.template).map((n) => ({ id: n.nodeId, kind: n.kind, tag: n.tag, path: n.structuralPath, range: n.range, source: n.sourceText })) }, null, 2));
     return;
   }
   const node = flattenTemplate(result.parsed.template).find((n) => n.nodeId === nodeId);
@@ -135,8 +117,8 @@ function inspect(file?: string, nodeId?: string) {
 
 function capabilities(file?: string) {
   assertFile(file);
-  const result = analyzeVueFile(path.resolve(file!), process.cwd(), createAntDesignVueRegistry());
-  console.log(JSON.stringify({ file: result.file, capabilities: result.hcp.nodes.map((n) => ({ id: n.id, tag: n.tag, mode: n.mode, capabilities: n.capabilities })) }, null, 2));
+  const result = analyzeVueFile(path.resolve(file!));
+  console.log(JSON.stringify({ file: result.file, capabilities: result.hcp.nodes.map((n) => ({ id: n.id, tag: n.tag, mode: n.mode, resolution: n.resolution, capabilities: n.capabilities })) }, null, 2));
 }
 
 function plan(input?: string, changesFile?: string, outFile?: string) {
@@ -157,41 +139,31 @@ function apply(file?: string, changeFile?: string) {
   const parsed = parseVueSfc(abs, fs.readFileSync(abs, 'utf8'));
   const patchPlan = createPatchPlan(parsed, { ...change, file: abs });
   const result = applyPatchToFile(abs, patchPlan);
-  persistInverse(abs, result.inversePlan);
-  console.log(result.gitDiff || 'No changes.');
+  fs.mkdirSync(path.join(path.dirname(abs), '.hcbridge'), { recursive: true });
+  console.log(JSON.stringify({ changed: result.changed, diff: result.gitDiff, inversePlan: result.inversePlan }, null, 2));
 }
 
-function evolve(projectDir: string, changesFile?: string) {
-  assertFile(changesFile);
+function evolve(argv: string[]) {
+  const projectDir = argv[0] && !argv[0]!.startsWith('--') ? argv[0]! : '.';
+  const changesFile = argv.find((arg) => !arg.startsWith('--') && arg !== projectDir);
+  if (!changesFile) throw new Error('evolve requires <changes.json>.');
+  const maxSafety = (argv.find((arg) => arg.startsWith('--max-safety='))?.split('=')[1] ?? 'SAFE') as SafetyLevel;
+  const dryRun = argv.includes('--dry-run');
+  const verify = argv.includes('--verify');
   const root = path.resolve(projectDir);
-  const changes = readChanges(changesFile!);
-  const planResult = createEvolutionPlan(root, changes);
-  console.log(JSON.stringify({ phase: 'plan', plan: planResult }, null, 2));
-  if (planResult.diagnostics.some((d) => d.severity === 'error')) process.exit(2);
-  const result = applyEvolutionPlan(root, planResult, { verify: true, stopOnFailure: true });
-  const rollback = { version: '0.2', createdAt: new Date().toISOString(), projectRoot: root, files: result.inversePlans };
-  const hc = path.join(root, '.hcbridge', 'rollback');
-  fs.mkdirSync(hc, { recursive: true });
-  const rollbackPath = path.join(hc, `evolution-${Date.now()}.json`);
-  fs.writeFileSync(rollbackPath, JSON.stringify(rollback, null, 2));
-  console.log(JSON.stringify({ changedFiles: result.changedFiles, skippedFiles: result.skippedFiles, diffs: result.diffs, verification: result.verification, rollbackPath }, null, 2));
-}
-
-function rollback(file?: string, inverseFile?: string) {
-  assertFile(file); assertFile(inverseFile);
-  const abs = path.resolve(file!);
-  const raw = JSON.parse(fs.readFileSync(inverseFile!, 'utf8'));
-  if (Array.isArray(raw.files)) {
-    for (const item of raw.files as Array<{ file: string; plan: unknown }>) {
-      const target = path.isAbsolute(item.file) ? item.file : path.resolve(path.dirname(abs), item.file);
-      const result = applyPatchToFile(target, item.plan as any);
-      console.log(result.gitDiff || `Rollback produced no changes: ${target}`);
-    }
+  const changes = readChanges(changesFile);
+  const planResult = createEvolutionPlan(root, changes, { maxSafety });
+  if (dryRun) {
+    console.log(JSON.stringify({ dryRun: true, plan: planResult }, null, 2));
     return;
   }
-  const plan = raw.plan ?? raw;
-  const result = applyPatchToFile(abs, plan);
-  console.log(result.gitDiff || 'Rollback produced no changes.');
+  const result = applyEvolutionPlan(root, planResult, { maxSafety, stopOnFailure: true, verifyReparse: true, verifyTypecheck: verify, verifyBuild: verify });
+  console.log(JSON.stringify(result, null, 2));
+}
+
+function rollback(projectDir?: string, journalFile?: string) {
+  assertPath(projectDir); assertFile(journalFile);
+  console.log(JSON.stringify(rollbackJournal(path.resolve(projectDir!), path.resolve(journalFile!)), null, 2));
 }
 
 function snapshot(projectDir: string, outFile?: string) {
@@ -203,7 +175,6 @@ function snapshot(projectDir: string, outFile?: string) {
   console.log(`Snapshot: ${file}`);
 }
 
-
 function status(projectDir: string, snapshotFile?: string) {
   const root = path.resolve(projectDir);
   const project = scanProject(root);
@@ -214,50 +185,26 @@ function status(projectDir: string, snapshotFile?: string) {
 }
 
 function history(projectDir: string) {
-  const dir = path.join(path.resolve(projectDir), '.hcbridge', 'rollback');
-  if (!fs.existsSync(dir)) { console.log(JSON.stringify({ rollbackDir: dir, entries: [] }, null, 2)); return; }
+  const dir = path.join(path.resolve(projectDir), '.hcbridge', 'history');
+  if (!fs.existsSync(dir)) { console.log(JSON.stringify({ historyDir: dir, entries: [] }, null, 2)); return; }
   const entries = fs.readdirSync(dir).filter((name) => name.endsWith('.json')).sort().reverse().map((name) => ({ file: name, path: path.join(dir, name), size: fs.statSync(path.join(dir, name)).size }));
-  console.log(JSON.stringify({ rollbackDir: dir, entries }, null, 2));
+  console.log(JSON.stringify({ historyDir: dir, entries }, null, 2));
 }
 
 function verify(projectDir: string) {
-  console.log(JSON.stringify(verifyProject(path.resolve(projectDir)), null, 2));
+  console.log(JSON.stringify(verifyProject(path.resolve(projectDir), { runTypecheck: true, runBuild: true }), null, 2));
 }
 
 function report(projectDir: string) {
-  const project = scanProject(path.resolve(projectDir));
-  const artifacts = writeProjectArtifacts(project);
-  console.log(JSON.stringify({ projectRoot: project.projectRoot, totals: project.totals, artifacts }, null, 2));
+  const result = scanProject(path.resolve(projectDir));
+  const artifacts = writeProjectArtifacts(result);
+  console.log(JSON.stringify({ artifacts, totals: result.totals, failedFiles: result.failedFiles }, null, 2));
 }
 
 function readChanges(file: string): EvolutionChangeSet {
-  const value = JSON.parse(fs.readFileSync(file, 'utf8')) as EvolutionChangeSet | ChangeSetLike;
-  if (Array.isArray((value as EvolutionChangeSet).changes)) {
-    return value as EvolutionChangeSet;
-  }
-  return { changes: [value as unknown as ChangeSetLike] as any };
-}
-
-type ChangeSetLike = {
-  file: string;
-  nodeId: string;
-  operation: string;
-  target: string;
-  value: string;
-};
-
-function persistInverse(file: string, plan: unknown) {
-  const rollbackDir = path.resolve('.hcbridge', 'rollback');
-  fs.mkdirSync(rollbackDir, { recursive: true });
-  const safe = path.basename(file).replace(/[^a-zA-Z0-9._-]+/g, '_');
-  const inversePath = path.join(rollbackDir, `${Date.now()}-${safe}.inverse.json`);
-  fs.writeFileSync(inversePath, JSON.stringify(plan, null, 2));
-  console.log(`\nInverse plan: ${inversePath}`);
-}
-
-function resolveProjectRoot(input: string): string {
-  const abs = path.resolve(input);
-  return abs.endsWith('.vue') ? path.dirname(abs) : abs;
+  const value = JSON.parse(fs.readFileSync(file, 'utf8')) as EvolutionChangeSet;
+  if (!value || !Array.isArray(value.changes)) throw new Error('Invalid changes JSON: expected {changes: []}.');
+  return value;
 }
 
 function assertFile(file?: string): asserts file is string {
@@ -265,4 +212,9 @@ function assertFile(file?: string): asserts file is string {
 }
 function assertPath(file?: string): asserts file is string {
   if (!file || !fs.existsSync(file)) throw new Error(`Path not found: ${file ?? ''}`);
+}
+function resolveProjectRoot(input: string): string {
+  const abs = path.resolve(input);
+  if (fs.statSync(abs).isDirectory()) return abs;
+  return path.dirname(abs);
 }

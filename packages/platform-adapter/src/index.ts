@@ -24,6 +24,6 @@ export class JsonPlatformAdapter implements PlatformAdapter {
   }
 
   async changesToPatch(_changes: ChangeSet[]): Promise<PatchPlan> {
-    return { version: '0.1', operations: [], inverse: [], diagnostics: [{ severity: 'error', code: 'ADAPTER_DEMO', message: 'Map platform changes to PatchPlan in your platform adapter.' }] };
+    return { version: '0.2', sourceHash: '', operations: [], inverse: [], diagnostics: [{ severity: 'error', code: 'ADAPTER_DEMO', message: 'Map platform changes to PatchPlan in your platform adapter.' }] };
   }
 }

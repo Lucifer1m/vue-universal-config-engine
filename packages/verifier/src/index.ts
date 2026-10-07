@@ -7,33 +7,64 @@ export interface VerifyResult {
   reparse: { ok: boolean; diagnostics: string[] };
   typecheck: { attempted: boolean; ok: boolean; output?: string };
   build: { attempted: boolean; ok: boolean; output?: string };
+  projectFiles?: { file: string; ok: boolean; diagnostics: string[] }[];
 }
 
 export function verifyFile(file: string, text: string): VerifyResult {
   try {
     const parsed = parseVueSfc(file, text);
-    return { reparse: { ok: parsed.diagnostics.every((d) => d.severity !== 'error'), diagnostics: parsed.diagnostics.map((d) => d.message) }, typecheck: { attempted: false, ok: true }, build: { attempted: false, ok: true } };
+    return {
+      reparse: { ok: parsed.diagnostics.every((d) => d.severity !== 'error'), diagnostics: parsed.diagnostics.map((d) => d.message) },
+      typecheck: { attempted: false, ok: true },
+      build: { attempted: false, ok: true },
+    };
   } catch (error) {
     return { reparse: { ok: false, diagnostics: [String(error)] }, typecheck: { attempted: false, ok: false }, build: { attempted: false, ok: false } };
   }
 }
 
-export function verifyProject(projectDir: string): VerifyResult {
-  const result = verifyFile(path.join(projectDir, '__synthetic__.vue'), '<template><div /></template>');
-  const command = 'pnpm';
-  const execPrefix = ['exec'];
-  const typecheck = runOptional(projectDir, command, [...execPrefix, 'vue-tsc', '--noEmit']);
-  const build = fs.existsSync(path.join(projectDir, 'vite.config.ts')) || fs.existsSync(path.join(projectDir, 'vite.config.js'))
-    ? runOptional(projectDir, command, [...execPrefix, 'vite', 'build'])
-    : { attempted: false, ok: true, output: 'No Vite config found; build skipped.' };
-  return { ...result, typecheck, build };
+export function verifyProject(
+  projectDir: string,
+  options: { runTypecheck?: boolean; runBuild?: boolean } = {},
+): VerifyResult {
+  const files = collectVueFiles(projectDir);
+  const projectFiles = files.map((file) => {
+    try {
+      const parsed = parseVueSfc(file, fs.readFileSync(file, 'utf8'));
+      const diagnostics = parsed.diagnostics.filter((d) => d.severity === 'error').map((d) => d.message);
+      return { file: path.relative(projectDir, file), ok: diagnostics.length === 0, diagnostics };
+    } catch (error) {
+      return { file: path.relative(projectDir, file), ok: false, diagnostics: [String(error)] };
+    }
+  });
+  const reparseOk = projectFiles.every((item) => item.ok);
+  const typecheck = options.runTypecheck ? runPackageCommand(projectDir, ['exec', 'vue-tsc', '--noEmit']) : { attempted: false, ok: true, output: 'Typecheck skipped.' };
+  const viteConfig = ['vite.config.ts', 'vite.config.js', 'vite.config.mjs'].some((name) => fs.existsSync(path.join(projectDir, name)));
+  const build = options.runBuild && viteConfig ? runPackageCommand(projectDir, ['exec', 'vite', 'build']) : { attempted: false, ok: true, output: options.runBuild ? 'No Vite config found; build skipped.' : 'Build skipped.' };
+  return { reparse: { ok: reparseOk, diagnostics: projectFiles.flatMap((item) => item.diagnostics) }, typecheck, build, projectFiles };
 }
 
-function runOptional(cwd: string, command: string, args: string[]) {
+function runPackageCommand(cwd: string, args: string[]) {
   try {
-    const output = execFileSync(command, args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    const output = execFileSync('pnpm', args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     return { attempted: true, ok: true, output };
   } catch (error: any) {
-    return { attempted: true, ok: false, output: `${error.stdout ?? ''}\n${error.stderr ?? ''}` };
+    return { attempted: true, ok: false, output: `${error.stdout ?? ''}\n${error.stderr ?? ''}`.trim() };
   }
+}
+
+function collectVueFiles(root: string): string[] {
+  const out: string[] = [];
+  const visit = (current: string) => {
+    if (!fs.existsSync(current)) return;
+    const stat = fs.statSync(current);
+    if (stat.isFile()) { if (current.endsWith('.vue')) out.push(current); return; }
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      if (['node_modules', 'dist', '.git', '.hcbridge', 'coverage'].includes(entry.name)) continue;
+      const next = path.join(current, entry.name);
+      if (entry.isDirectory()) visit(next); else if (entry.name.endsWith('.vue')) out.push(next);
+    }
+  };
+  visit(root);
+  return out.sort();
 }

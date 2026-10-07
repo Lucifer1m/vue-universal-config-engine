@@ -1,6 +1,6 @@
 {
   "name": "@hcbridge/hcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "private": true,
   "exports": {
@@ -10,7 +10,8 @@
   "dependencies": {
     "@hcbridge/source-model": "workspace:*",
     "@hcbridge/semantic-graph": "workspace:*",
-    "@hcbridge/capability-registry": "workspace:*"
+    "@hcbridge/capability-registry": "workspace:*",
+    "@hcbridge/component-resolver": "workspace:*"
   },
   "devDependencies": {},
   "scripts": {

@@ -18,9 +18,25 @@ export function fingerprint(parts: string[]): string {
   return shortHash(parts.map(normalizeWhitespace).join('|'));
 }
 
-export function createNodeId(file: string, structuralPath: string, kind: string, name: string): string {
+export function toProjectRelative(file: string, projectRoot = process.cwd()): string {
   const absolute = path.resolve(file);
-  const logicalFile = (path.relative(process.cwd(), absolute) || path.basename(absolute)).split(path.sep).join('/');
+  const root = path.resolve(projectRoot);
+  const relative = path.relative(root, absolute).split(path.sep).join('/');
+  return relative || path.basename(absolute);
+}
+
+/**
+ * Stable across machines when the same logical file exists under the same project root.
+ * structuralPath is evidence, not the only identity signal; callers should persist source refs.
+ */
+export function createNodeId(
+  file: string,
+  structuralPath: string,
+  kind: string,
+  name: string,
+  projectRoot = process.cwd(),
+): string {
+  const logicalFile = toProjectRelative(file, projectRoot);
   return `node_${shortHash(`${logicalFile}|${structuralPath}|${kind}|${name}`)}`;
 }
 
@@ -49,20 +65,47 @@ export interface LocateCandidate {
   end: number;
   parentFingerprint?: string;
   siblingFingerprint?: string;
+  tag?: string;
+  kind?: string;
+}
+
+export interface LocateEvidence {
+  text: string;
+  syntaxFingerprint: string;
+  start: number;
+  end: number;
+  parentFingerprint?: string;
+  siblingFingerprint?: string;
+  tag?: string;
+  kind?: string;
 }
 
 export function locateByEvidence(
   text: string,
-  original: { text: string; syntaxFingerprint: string; start: number; end: number },
+  original: LocateEvidence,
   candidates: LocateCandidate[],
 ): { state: LocatorState; candidate?: LocateCandidate } {
   const current = text.slice(original.start, original.end);
-  if (sha256(current) === sha256(original.text)) {
-    const same = candidates.find((c) => c.start === original.start && c.end === original.end);
-    if (same) return { state: 'exact', candidate: same };
+  const exactTextHash = sha256(current);
+  if (exactTextHash === sha256(original.text)) {
+    const exact = candidates.find((c) => c.start === original.start && c.end === original.end);
+    if (exact) return { state: 'exact', candidate: exact };
   }
-  const fp = candidates.filter((c) => c.syntaxFingerprint === original.syntaxFingerprint);
-  if (fp.length === 1) return { state: 'relocated', candidate: fp[0] };
-  if (fp.length > 1) return { state: 'ambiguous' };
-  return { state: 'lost' };
+
+  let ranked = candidates
+    .map((candidate) => ({
+      candidate,
+      score:
+        (candidate.syntaxFingerprint === original.syntaxFingerprint ? 10 : 0) +
+        (candidate.parentFingerprint && candidate.parentFingerprint === original.parentFingerprint ? 4 : 0) +
+        (candidate.siblingFingerprint && candidate.siblingFingerprint === original.siblingFingerprint ? 3 : 0) +
+        (candidate.tag && candidate.tag === original.tag ? 2 : 0) +
+        (candidate.kind && candidate.kind === original.kind ? 1 : 0),
+    }))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  if (ranked.length === 1) return { state: 'relocated', candidate: ranked[0]!.candidate };
+  if (ranked.length > 1 && ranked[0]!.score > ranked[1]!.score) return { state: 'relocated', candidate: ranked[0]!.candidate };
+  return { state: ranked.length ? 'ambiguous' : 'lost' };
 }

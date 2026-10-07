@@ -1,7 +1,7 @@
 {
   "name": "vue-universal-config-engine",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Vue 3 high-code configurability bridge: inspect, minimally patch, reparse and verify.",
   "type": "module",
   "packageManager": "pnpm@12.9.1",
@@ -23,7 +23,9 @@
     "evolve": "tsx apps/cli/src/index.ts evolve .",
     "doctor": "tsx apps/cli/src/index.ts doctor .",
     "report": "tsx apps/cli/src/index.ts report .",
-    "snapshot": "tsx apps/cli/src/index.ts snapshot ."
+    "snapshot": "tsx apps/cli/src/index.ts snapshot .",
+    "index": "tsx apps/cli/src/index.ts index .",
+    "evolve:dry": "tsx apps/cli/src/index.ts evolve . fixtures/evolution/changes.example.json --dry-run"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
