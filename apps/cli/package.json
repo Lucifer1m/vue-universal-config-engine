@@ -1,0 +1,22 @@
+{
+  "name": "@hcbridge/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "hcbridge": "./src/index.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@hcbridge/hcp": "0.1.0",
+    "@hcbridge/patch-engine": "0.1.0",
+    "@hcbridge/platform-adapter": "0.1.0",
+    "@hcbridge/semantic-graph": "0.1.0",
+    "@hcbridge/verifier": "0.1.0",
+    "@hcbridge/vue-parser": "0.1.0",
+    "@hcbridge/capability-registry": "0.1.0",
+    "@hcbridge/ts-analyzer": "0.1.0"
+  }
+}

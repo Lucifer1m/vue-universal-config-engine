@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {"composite": true, "tsBuildInfoFile": "./dist/.tsbuildinfo"},
+  "references": [
+    {"path":"../../packages/hcp"},
+    {"path":"../../packages/patch-engine"},
+    {"path":"../../packages/platform-adapter"},
+    {"path":"../../packages/semantic-graph"},
+    {"path":"../../packages/verifier"},
+    {"path":"../../packages/vue-parser"}
+  ],
+  "include": ["src/**/*.ts"]
+}

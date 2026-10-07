@@ -1,0 +1,32 @@
+{
+  "name": "vue-universal-config-engine",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Vue 3 high-code configurability bridge: inspect, minimally patch, reparse and verify.",
+  "type": "module",
+  "packageManager": "npm@10",
+  "engines": { "node": ">=22" },
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "cli": "tsx apps/cli/src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b",
+    "format:check": "prettier --check .",
+    "analyze:fixture": "tsx apps/cli/src/index.ts analyze fixtures/basic/UserList.vue",
+    "inspect:fixture": "tsx apps/cli/src/index.ts inspect fixtures/basic/UserList.vue",
+    "plan:fixture": "tsx apps/cli/src/index.ts plan fixtures/basic/UserList.vue fixtures/basic/change.json",
+    "apply:fixture": "tsx apps/cli/src/index.ts apply fixtures/basic/UserList.vue fixtures/basic/change.json",
+    "build": "tsc -b"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "@vue/compiler-sfc": "3.5.43",
+    "@vue/compiler-dom": "3.5.43",
+    "magic-string": "1.4.1",
+    "prettier": "^3.6.2",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.0.3"
+  }
+}

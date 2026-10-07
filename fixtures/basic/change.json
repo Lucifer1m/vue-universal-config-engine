@@ -1,0 +1,7 @@
+{
+  "file": "fixtures/basic/UserList.vue",
+  "nodeId": "REPLACE_WITH_NODE_ID",
+  "operation": "set-prop",
+  "target": "type",
+  "value": "default"
+}
