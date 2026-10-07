@@ -20,6 +20,7 @@ import { createPatchPlan, applyPatchToFile } from '@hcbridge/patch-engine';
 import { verifyProject } from '@hcbridge/verifier';
 import { analyzeComponentContract, buildComponentDependencyGraph } from '@hcbridge/component-intelligence';
 import { createSandboxSession, type EditIntent } from '@hcbridge/sandbox-kernel';
+import { inspectDomTarget, type DomTargetSignature } from '@hcbridge/visual-inspector';
 
 const [, , command, ...args] = process.argv;
 
@@ -33,6 +34,7 @@ try {
     case 'index': index(args[0] ?? '.'); break;
     case 'analyze': analyze(args[0]); break;
     case 'inspect': inspect(args[0], args[1]); break;
+    case 'inspect-runtime': inspectRuntime(args[0], args[1]); break;
     case 'capabilities': capabilities(args[0]); break;
     case 'contract': contract(args[0]); break;
     case 'graph': graph(args[0], args.slice(1)); break;
@@ -118,6 +120,16 @@ function inspect(file?: string, nodeId?: string) {
   const hcpNode = result.hcp.nodes.find((n) => n.id === nodeId);
   const semantic = result.graph.components.find((c) => c.nodeId === nodeId);
   console.log(JSON.stringify({ node, semantic, hcp: hcpNode }, null, 2));
+}
+
+function inspectRuntime(projectDir?: string, targetFile?: string) {
+  assertPath(projectDir);
+  assertFile(targetFile);
+  const target = JSON.parse(fs.readFileSync(path.resolve(targetFile!), 'utf8')) as DomTargetSignature;
+  if (!target || typeof target.tag !== 'string') throw new Error('Invalid DOM target JSON: expected { tag: string, ... }.');
+  inspectDomTarget(path.resolve(projectDir!), target)
+    .then((result) => console.log(JSON.stringify(result, null, 2)))
+    .catch((error) => { console.error(`hcbridge: ${String(error)}`); process.exitCode = 2; });
 }
 
 function capabilities(file?: string) {

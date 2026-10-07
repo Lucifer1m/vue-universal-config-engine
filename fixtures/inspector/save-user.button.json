@@ -1,0 +1,9 @@
+{
+  "tag": "button",
+  "id": "save-user",
+  "classes": ["primary"],
+  "attributes": {
+    "type": "button"
+  },
+  "text": "保存用户"
+}

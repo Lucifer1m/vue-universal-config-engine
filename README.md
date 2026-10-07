@@ -1,6 +1,6 @@
 # Vue Universal Config Engine
 
-Vue 3 高代码演化器 v0.5：让已有 Vue3 工程在**不重写源码**的前提下获得可配置、可审查、可回滚的演化能力，并进一步理解本地组件契约与依赖图。
+Vue 3 高代码演化器 v0.6：让已有 Vue3 工程在**不重写源码**的前提下获得可配置、可审查、可回滚的演化能力，并进一步理解本地组件契约与依赖图。
 
 > Source → Analyze → Sandbox → Edit Intent → Patch → Runtime → Verify → Snapshot / Rollback
 
@@ -90,6 +90,7 @@ packages/
   build-adapter-vite/        Vite detection adapter
   runtime-trace/             Runtime trace protocol skeleton
   sandbox-kernel/            Real project sandbox, edit intents and snapshots
+  visual-inspector/          Runtime DOM → Vue source candidate locator
 
 tests / fixtures/             Realistic regression samples
 ```
@@ -299,13 +300,42 @@ AI / 人工编辑统一走 EditIntent：
 ## 下一阶段
 
 1. Monaco 编辑器与专业 Diff UI
-2. Preview DOM → Vue SFC SourceRef 双向定位
-3. AI Agent：自然语言 → EditIntent → Patch → Build / Runtime Verify
-4. WebContainer / Remote Container runtime adapter
+2. AI Agent：自然语言 → EditIntent → Patch → Build / Runtime Verify
+3. WebContainer / Remote Container runtime adapter
+4. Runtime component identity / Vue Devtools-compatible trace
 5. 最后再考虑平台 Projection，而不是让平台 Schema 取代源码
-4. Platform Adapter 接入现有低代码平台
-5. Code Inspector → Capability Inspector
-6. Overlay 只在恒等变换 fixture 证明后进入
+
+## v0.6 新增：Visual Inspector
+
+v0.6 在真实 Preview 上增加 Visual Inspector，把运行时 DOM 点击连接回 `.vue` 源码，但不虚构 100% 精确映射。
+
+```text
+Preview DOM
+   ↓ postMessage
+Inspector Bridge
+   ↓
+Visual Inspector
+   ↓
+Vue Template AST
+   ↓
+exact / relocated / ambiguous / lost
+   ↓
+SourceRange
+   ↓
+Editor selection
+```
+
+当前定位证据包含 tag、component alias、id、class、静态 attributes、href、文本与祖先结构。无法安全判断时保留候选，而不是猜测并修改源码。
+
+启动：
+
+```bash
+pnpm run sandbox:fixture
+```
+
+然后点击 `Inspect`，在右侧真实 Preview 中选择元素；工作台会尝试打开对应 `.vue` 文件和源码范围。
+
+详细设计见 `docs/evolver/v0.6-visual-inspector.md`。
 
 ## v0.4 Component Intelligence
 

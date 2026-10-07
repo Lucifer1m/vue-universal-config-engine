@@ -1,6 +1,6 @@
 # HCBridge Sandbox
 
-v0.5 的最小本地 Sandbox Gateway。
+v0.6 的本地 Sandbox Gateway + Visual Inspector 工作台。
 
 ```bash
 pnpm run sandbox:fixture
@@ -8,11 +8,15 @@ pnpm run sandbox:fixture
 
 默认打开 `http://127.0.0.1:4170`。
 
-它会创建一个受信任的本地 Sandbox Session，并提供：
+提供：
 
 - 文件浏览 / 读取 / 保存
 - 本地 dev server start / stop
 - Snapshot / Restore / Diff
 - Human / AI 共用的 EditIntent API
+- Visual Inspector：Preview DOM 点击 → `.vue` 候选源码定位
+- `exact / relocated / ambiguous / lost` 状态
 
-当前版本故意不把本地 Node 进程伪装成多租户安全沙盒。需要真正的隔离执行时，将由后续 runtime adapter 接入 WebContainer 或远程 container/VM。
+Visual Inspector 通过 gateway 代理 Preview HTML 并注入轻量 `postMessage` bridge。它只采集 DOM 特征，不修改目标项目源码。
+
+> 当前 preview proxy 只代理 HTTP，不代理 WebSocket，因此 Inspector 模式不保证 Vite HMR。真正的安全隔离和完整 runtime adapter 将在后续版本实现。

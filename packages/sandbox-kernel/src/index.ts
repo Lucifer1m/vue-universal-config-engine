@@ -160,7 +160,7 @@ function detectPackageManagerInDirectory(directory: string): PackageManagerInfo 
   try {
     packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')) as Record<string, unknown>;
   } catch {
-    // Keep searching parent directories for a workspace manifest.
+    return undefined;
   }
   const packageManager = typeof packageJson.packageManager === 'string' ? packageJson.packageManager : '';
   const fromManifest = packageManager.split('@')[0];

@@ -53,6 +53,9 @@
       "path": "./packages/testkit"
     },
     {
+      "path": "./packages/visual-inspector"
+    },
+    {
       "path": "./packages/sandbox-kernel"
     },
     {

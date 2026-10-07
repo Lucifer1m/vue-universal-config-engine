@@ -1,4 +1,4 @@
-# High-Code Evolver v0.5
+# High-Code Evolver v0.6
 
 `@hcbridge/evolution-engine` 是项目级高代码演化层。它不是代码生成器，也不是把 Vue 页面整体收成 JSON；它负责让已有 Vue3 工程可被机器理解、局部配置和安全演化。
 
@@ -156,3 +156,39 @@ pnpm run cli -- sandbox edit fixtures/sandbox/edit-intent.example.json examples/
 ```
 
 注意：v0.5 的本地 runtime 是受信任开发环境，并不是多租户安全隔离沙盒。WebContainer、远程 container/VM、Monaco 与 Runtime DOM → SourceRef 定位留到后续 adapter / UI 阶段。
+
+# v0.6 Visual Inspector
+
+v0.6 把 Sandbox Preview 与源码建立第一条可用连接：
+
+```text
+Real Preview
+   ↓
+Inspector Bridge
+   ↓
+DOM signature
+   ↓
+Visual Inspector
+   ↓
+Vue Template AST
+   ↓
+exact / relocated / ambiguous / lost
+   ↓
+SourceRange
+```
+
+启动：
+
+```bash
+pnpm run sandbox:fixture
+```
+
+工作台点击 `Inspect` 后，在 Preview 中点一个元素；服务端扫描项目 `.vue` template 并返回候选。`exact` / `relocated` 才会自动定位源码；`ambiguous` / `lost` 只展示诊断和候选，不猜测。
+
+命令行回归：
+
+```bash
+pnpm run inspect-runtime:fixture
+```
+
+当前 Proxy 只转发 HTTP，不转发 WebSocket，所以 Inspector 模式不保证 Vite HMR；这属于后续 Runtime Adapter 工作。

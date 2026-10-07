@@ -1,8 +1,8 @@
 {
   "name": "vue-universal-config-engine",
   "private": true,
-  "version": "0.5.0",
-  "description": "Vue 3 high-code evolution engine with a real-project sandbox, visual source bridge and AI/human edit intents.",
+  "version": "0.6.0",
+  "description": "Vue 3 high-code evolution engine with a real-project sandbox, visual source inspection and AI/human edit intents.",
   "type": "module",
   "packageManager": "pnpm@12.9.1",
   "engines": {
@@ -29,7 +29,9 @@
     "contract:fixture": "tsx apps/cli/src/index.ts contract fixtures/local/UserSelector.vue",
     "graph:fixture": "tsx apps/cli/src/index.ts graph fixtures/local/Parent.vue",
     "sandbox": "tsx apps/sandbox/src/index.ts --project .",
-    "sandbox:fixture": "tsx apps/sandbox/src/index.ts --project examples/antdv-vite"
+    "sandbox:fixture": "tsx apps/sandbox/src/index.ts --project examples/antdv-vite",
+    "sandbox:inspector": "tsx apps/sandbox/src/index.ts --project examples/antdv-vite",
+    "inspect-runtime:fixture": "tsx apps/cli/src/index.ts inspect-runtime fixtures/inspector fixtures/inspector/save-user.button.json"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",

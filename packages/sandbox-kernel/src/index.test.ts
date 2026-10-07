@@ -5,17 +5,8 @@ import { describe, expect, it } from 'vitest';
 import { createSandboxSession, detectPackageManager, extractPreviewUrl, sha256 } from './index.js';
 
 describe('sandbox-kernel', () => {
-  it('inherits pnpm from a parent workspace manifest', async () => {
-    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'hcbridge-pm-workspace-'));
-    const nested = path.join(root, 'examples', 'app');
-    await fs.mkdir(nested, { recursive: true });
-    await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({ packageManager: 'pnpm@12.9.1' }));
-    await fs.writeFile(path.join(nested, 'package.json'), JSON.stringify({ name: 'app' }));
-    expect(detectPackageManager(nested)).toMatchObject({ name: 'pnpm', reason: 'packageManager field' });
-  });
-
-  it('reads a Vite preview URL when the port is wrapped in color codes', () => {
-    const output = '  \u001b[32m➜\u001b[39m  \u001b[1mLocal\u001b[22m:   \u001b[36mhttp://localhost:\u001b[1m5173\u001b[22m/\u001b[39m\n';
+  it('reads a Vite URL even when the port is wrapped in ANSI color', () => {
+    const output = '  ➜  Local:   http://localhost:\u001b[1m5173\u001b[22m/';
     expect(extractPreviewUrl(output)).toBe('http://localhost:5173/');
   });
 

@@ -1,4 +1,4 @@
-# Evolver Feature Matrix v0.5
+# Evolver Feature Matrix v0.6
 
 | Capability | Status | Safety / Notes |
 |---|---|---|
@@ -49,5 +49,7 @@
 | File snapshot / restore | Implemented | Excludes node_modules/dist/.git/.hcbridge |
 | Sandbox diff | Implemented | Hash based |
 | Browser WebContainer runtime | Planned | Adapter boundary reserved |
-| Visual DOM → source mapping | Planned | Uses existing SourceRef / Component Intelligence |
+| Visual DOM → source mapping | Implemented | Candidate ranking; exact / relocated / ambiguous / lost |
 | Natural-language AI agent | Planned | Produces EditIntent, not a second editor |
+| Inspector Bridge | Implemented | Preview HTML injection + postMessage |
+| Inspector source selection | Implemented | Opens file and SourceRange in current editor |

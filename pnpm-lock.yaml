@@ -223,6 +223,9 @@ importers:
       '@hcbridge/verifier':
         specifier: workspace:*
         version: link:../../packages/verifier
+      '@hcbridge/visual-inspector':
+        specifier: workspace:*
+        version: link:../../packages/visual-inspector
       '@hcbridge/vue-parser':
         specifier: workspace:*
         version: link:../../packages/vue-parser
@@ -232,6 +235,9 @@ importers:
       '@hcbridge/sandbox-kernel':
         specifier: workspace:*
         version: link:../../packages/sandbox-kernel
+      '@hcbridge/visual-inspector':
+        specifier: workspace:*
+        version: link:../../packages/visual-inspector
 
   examples/antdv-vite:
     dependencies:
@@ -441,6 +447,15 @@ importers:
         version: 5.9.3
 
   packages/verifier:
+    dependencies:
+      '@hcbridge/source-model':
+        specifier: workspace:*
+        version: link:../source-model
+      '@hcbridge/vue-parser':
+        specifier: workspace:*
+        version: link:../vue-parser
+
+  packages/visual-inspector:
     dependencies:
       '@hcbridge/source-model':
         specifier: workspace:*
