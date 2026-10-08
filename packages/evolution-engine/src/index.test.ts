@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { analyzeVueFile, scanProject, createEvolutionPlan, applyEvolutionPlan, classifyChange } from './index';
+import { analyzeVueFile, scanProject, createEvolutionPlan, applyEvolutionPlan, classifyChange } from './index.js';
 import { parseVueSfc, flattenTemplate } from '@hcbridge/vue-parser';
 import { createPatchPlan, applyPatchPlan } from '@hcbridge/patch-engine';
 

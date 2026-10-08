@@ -212,7 +212,7 @@ export function projectToHcp(
 function findNativeAttributes(graph: SemanticGraph, nodeId: string): Capability[] {
   const node = graph.templateNodes.find((item) => item.nodeId === nodeId);
   if (!node) return [];
-  return node.attributes.map((attr) => ({
+  return node.attributes.map((attr): Capability => ({
     type: attr.name === 'class' || attr.name === 'style' ? 'style' : 'prop',
     name: attr.name,
     editable: true,

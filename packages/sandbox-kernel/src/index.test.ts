@@ -2,14 +2,9 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { createSandboxSession, detectPackageManager, extractPreviewUrl, sha256 } from './index.js';
+import { createSandboxSession, detectPackageManager, sha256 } from './index.js';
 
 describe('sandbox-kernel', () => {
-  it('reads a Vite URL even when the port is wrapped in ANSI color', () => {
-    const output = '  ➜  Local:   http://localhost:\u001b[1m5173\u001b[22m/';
-    expect(extractPreviewUrl(output)).toBe('http://localhost:5173/');
-  });
-
   it('detects pnpm from manifest', async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), 'hcbridge-pm-'));
     await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({ packageManager: 'pnpm@12.9.1' }));
@@ -44,6 +39,22 @@ describe('sandbox-kernel', () => {
     const restored = await session.readFile('src/App.vue');
     expect(restored.hash).toBe(editedHash);
   });
+  it('clears a stale process error when a later start succeeds', async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'hcbridge-sandbox-restart-'));
+    await fs.writeFile(path.join(root, 'package.json'), JSON.stringify({ name: 'restart-fixture' }));
+    await fs.writeFile(path.join(root, 'dev-fixture.mjs'), "import fs from 'node:fs';\nif (fs.existsSync('fail')) { console.error('bad'); process.exit(1); }\nconsole.log('http://127.0.0.1:5099/');\nsetTimeout(() => {}, 10000);\n");
+    await fs.writeFile(path.join(root, 'fail'), '1');
+    const session = createSandboxSession({ projectRoot: root, install: false, command: process.execPath, args: ['dev-fixture.mjs'], startupTimeoutMs: 1500 });
+    await expect(session.start()).rejects.toThrow(/SANDBOX_START_FAILED|exit=1/);
+    expect(session.status().state).toBe('stopped');
+    expect(session.status().lastError).toContain('Preview process');
+    await fs.rm(path.join(root, 'fail'));
+    const started = await session.start();
+    expect(started.state).toBe('running');
+    expect(started.lastError).toBeNull();
+    await session.stop();
+  });
+
 });
 
 async function makeProject(): Promise<string> {

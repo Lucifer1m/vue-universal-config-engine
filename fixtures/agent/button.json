@@ -1,0 +1,7 @@
+{
+  "tag": "a-button",
+  "attributes": {
+    "type": "primary"
+  },
+  "text": "查询"
+}

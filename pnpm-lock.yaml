@@ -193,6 +193,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@hcbridge/agent-kernel':
+        specifier: workspace:*
+        version: link:../../packages/agent-kernel
       '@hcbridge/capability-registry':
         specifier: workspace:*
         version: link:../../packages/capability-registry
@@ -232,6 +235,9 @@ importers:
 
   apps/sandbox:
     dependencies:
+      '@hcbridge/agent-kernel':
+        specifier: workspace:*
+        version: link:../../packages/agent-kernel
       '@hcbridge/sandbox-kernel':
         specifier: workspace:*
         version: link:../../packages/sandbox-kernel
@@ -260,6 +266,12 @@ importers:
       vue-tsc:
         specifier: ^3.0.0
         version: 3.3.12(typescript@7.0.2)
+
+  packages/agent-kernel:
+    dependencies:
+      '@hcbridge/sandbox-kernel':
+        specifier: workspace:*
+        version: link:../sandbox-kernel
 
   packages/build-adapter-core:
     dependencies:

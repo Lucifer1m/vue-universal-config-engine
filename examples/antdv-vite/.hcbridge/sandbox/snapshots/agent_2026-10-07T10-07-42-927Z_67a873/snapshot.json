@@ -1,8 +1,8 @@
 {
-  "id": "manual_2026-10-07T09-24-59-436Z_59903c",
-  "createdAt": "2026-10-07T09:24:59.446Z",
+  "id": "agent_2026-10-07T10-07-42-927Z_67a873",
+  "createdAt": "2026-10-07T10:07:42.936Z",
   "projectRoot": "F:\\code\\vue-universal-config-engine\\vue-universal-config-engine\\examples\\antdv-vite",
-  "sourceDir": "F:\\code\\vue-universal-config-engine\\vue-universal-config-engine\\examples\\antdv-vite\\.hcbridge\\sandbox\\snapshots\\manual_2026-10-07T09-24-59-436Z_59903c",
+  "sourceDir": "F:\\code\\vue-universal-config-engine\\vue-universal-config-engine\\examples\\antdv-vite\\.hcbridge\\sandbox\\snapshots\\agent_2026-10-07T10-07-42-927Z_67a873",
   "files": [
     {
       "path": "index.html",
@@ -16,8 +16,8 @@
     },
     {
       "path": "src/App.vue",
-      "hash": "a8be57d0c8b82735eb12c874a6b88c43321b402a8ee23f3f6bee44d8a48478b3",
-      "size": 431
+      "hash": "7b2b7d3060e296a2f20dcc09f74addd6ac5584438ed00ad04c4c604cff5beba4",
+      "size": 432
     },
     {
       "path": "src/main.ts",

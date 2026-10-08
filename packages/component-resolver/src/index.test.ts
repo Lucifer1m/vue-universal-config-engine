@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { resolveImportedComponents } from './index';
+import { resolveImportedComponents } from './index.js';
 
 describe('component resolver', () => {
   it('resolves a local relative Vue component', () => {

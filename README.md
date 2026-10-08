@@ -347,3 +347,8 @@ pnpm run cli -- graph fixtures/local/Parent.vue
 ```
 
 组件契约可识别 `defineProps`、`defineEmits`、`defineModel`、`defineExpose`、`defineOptions({ name })`、`<slot>` 与 `defineSlots`；本地 Vue 组件会按 import 关系递归分析，并对循环、深度和文件数设置边界。
+
+
+## v0.7 Safe AI Agent
+
+在 Visual Inspector 之后，Agent 不直接改源码，而是生成 `AgentPlan`，再通过统一 `EditIntent` 执行。Apply 会先 Snapshot，并在项目存在 `typecheck` / `build` script 时自动验证；验证失败恢复 Snapshot。

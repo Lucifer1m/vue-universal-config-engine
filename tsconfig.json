@@ -56,6 +56,9 @@
       "path": "./packages/visual-inspector"
     },
     {
+      "path": "./packages/agent-kernel"
+    },
+    {
       "path": "./packages/sandbox-kernel"
     },
     {

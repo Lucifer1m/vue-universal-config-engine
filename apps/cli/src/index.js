@@ -6,6 +6,9 @@ import { flattenTemplate, parseVueSfc } from '@hcbridge/vue-parser';
 import { createPatchPlan, applyPatchToFile } from '@hcbridge/patch-engine';
 import { verifyProject } from '@hcbridge/verifier';
 import { analyzeComponentContract, buildComponentDependencyGraph } from '@hcbridge/component-intelligence';
+import { createSandboxSession } from '@hcbridge/sandbox-kernel';
+import { inspectDomTarget } from '@hcbridge/visual-inspector';
+import { buildAgentContext, createHeuristicAgent } from '@hcbridge/agent-kernel';
 const [, , command, ...args] = process.argv;
 if (!command)
     usage(1);
@@ -28,6 +31,12 @@ try {
             break;
         case 'inspect':
             inspect(args[0], args[1]);
+            break;
+        case 'inspect-runtime':
+            inspectRuntime(args[0], args[1]);
+            break;
+        case 'agent-plan':
+            agentPlan(args[0], args[1], args.slice(2).join(' '));
             break;
         case 'capabilities':
             capabilities(args[0]);
@@ -65,6 +74,9 @@ try {
         case 'report':
             report(args[0] ?? '.');
             break;
+        case 'sandbox':
+            sandbox(args);
+            break;
         default:
             console.error(`Unknown command: ${command}`);
             usage(1);
@@ -75,7 +87,7 @@ catch (error) {
     process.exit(2);
 }
 function usage(code = 0) {
-    console.log(`hcbridge - Vue 3 High-Code Evolver\n\nCommands:\n  init <projectDir>\n  doctor <projectDir>\n  scan <projectDir>\n  index <projectDir>\n  analyze <file>\n  inspect <file> [nodeId]\n  capabilities <file>\n  plan <file|projectDir> <changes.json> [out.json]\n  apply <file> <change.json>\n  evolve <projectDir> <changes.json> [--max-safety=SAFE|ASSISTED|RISKY|REJECTED] [--dry-run]\n  rollback <projectDir> <journal.json>\n  snapshot <projectDir> [out.json]\n  status <projectDir> [snapshot.json]\n  history <projectDir>\n  verify <projectDir>\n  report <projectDir>\n\nChangeSet operations:\n  set-prop       existing or new static prop\n  remove-prop    remove attr/directive by target\n  set-binding    set or add :prop / v-model expression\n  set-event      set or add @event handler\n  set-visibility set or add v-if expression (RISKY)\n  set-text       replace direct text node\n  insert-child   append/prepend raw child template (ASSISTED)\n  delete-node    delete a template node (ASSISTED)\n`);
+    console.log(`hcbridge - Vue 3 High-Code Evolver\n\nCommands:\n  init <projectDir>\n  doctor <projectDir>\n  scan <projectDir>\n  index <projectDir>\n  analyze <file>\n  inspect <file> [nodeId]\n  capabilities <file>\n  plan <file|projectDir> <changes.json> [out.json]\n  apply <file> <change.json>\n  evolve <projectDir> <changes.json> [--max-safety=SAFE|ASSISTED|RISKY|REJECTED] [--dry-run]\n  rollback <projectDir> <journal.json>\n  snapshot <projectDir> [out.json]\n  status <projectDir> [snapshot.json]\n  history <projectDir>\n  verify <projectDir>\n  report <projectDir>\n  sandbox <doctor|prepare|run|snapshot|restore|diff|read|edit> <projectDir> [args...]\n\nChangeSet operations:\n  set-prop       existing or new static prop\n  remove-prop    remove attr/directive by target\n  set-binding    set or add :prop / v-model expression\n  set-event      set or add @event handler\n  set-visibility set or add v-if expression (RISKY)\n  set-text       replace direct text node\n  insert-child   append/prepend raw child template (ASSISTED)\n  delete-node    delete a template node (ASSISTED)\n`);
     process.exit(code);
     throw new Error('unreachable');
 }
@@ -84,7 +96,7 @@ function init(projectDir) {
     const hc = path.join(dir, '.hcbridge');
     fs.mkdirSync(hc, { recursive: true });
     const config = {
-        version: '0.4',
+        version: '0.5',
         include: ['.'],
         exclude: ['node_modules', 'dist', '.git', '.hcbridge', 'coverage'],
         policy: { maxSafety: 'SAFE', stopOnFailure: true, verifyReparse: true, verifyTypecheck: false, verifyBuild: false },
@@ -134,6 +146,28 @@ function inspect(file, nodeId) {
     const hcpNode = result.hcp.nodes.find((n) => n.id === nodeId);
     const semantic = result.graph.components.find((c) => c.nodeId === nodeId);
     console.log(JSON.stringify({ node, semantic, hcp: hcpNode }, null, 2));
+}
+function inspectRuntime(projectDir, targetFile) {
+    assertPath(projectDir);
+    assertFile(targetFile);
+    const target = JSON.parse(fs.readFileSync(path.resolve(targetFile), 'utf8'));
+    if (!target || typeof target.tag !== 'string')
+        throw new Error('Invalid DOM target JSON: expected { tag: string, ... }.');
+    inspectDomTarget(path.resolve(projectDir), target)
+        .then((result) => console.log(JSON.stringify(result, null, 2)))
+        .catch((error) => { console.error(`hcbridge: ${String(error)}`); process.exitCode = 2; });
+}
+async function agentPlan(projectDir, targetFile, prompt) {
+    assertPath(projectDir);
+    assertFile(targetFile);
+    if (!prompt?.trim())
+        throw new Error('agent-plan requires a prompt.');
+    const root = path.resolve(projectDir);
+    const target = JSON.parse(fs.readFileSync(path.resolve(targetFile), 'utf8'));
+    const inspection = await inspectDomTarget(root, target);
+    const context = await buildAgentContext(root, { prompt, target, inspection });
+    const plan = await createHeuristicAgent().plan(context);
+    console.log(JSON.stringify({ inspection, plan }, null, 2));
 }
 function capabilities(file) {
     assertFile(file);
@@ -236,6 +270,63 @@ function report(projectDir) {
     const result = scanProject(path.resolve(projectDir));
     const artifacts = writeProjectArtifacts(result);
     console.log(JSON.stringify({ artifacts, totals: result.totals, failedFiles: result.failedFiles }, null, 2));
+}
+async function sandbox(argv) {
+    const action = argv[0] ?? 'doctor';
+    const projectDir = argv[1] && !argv[1].startsWith('--') ? argv[1] : '.';
+    const root = path.resolve(projectDir);
+    const session = createSandboxSession({ projectRoot: root, install: action === 'prepare' || action === 'run' });
+    try {
+        switch (action) {
+            case 'doctor':
+                console.log(JSON.stringify(session.status(), null, 2));
+                break;
+            case 'prepare':
+                console.log(JSON.stringify(await session.prepare(), null, 2));
+                break;
+            case 'run': {
+                const status = await session.start();
+                console.log(JSON.stringify(status, null, 2));
+                await new Promise((resolve) => {
+                    const stop = async () => {
+                        await session.stop();
+                        resolve();
+                    };
+                    process.once('SIGINT', stop);
+                    process.once('SIGTERM', stop);
+                });
+                break;
+            }
+            case 'snapshot':
+                console.log(JSON.stringify(await session.snapshot(argv[2]), null, 2));
+                break;
+            case 'restore':
+                console.log(JSON.stringify(await session.restore(argv[2]), null, 2));
+                break;
+            case 'diff':
+                console.log(JSON.stringify(await session.diff(argv[2]), null, 2));
+                break;
+            case 'read': {
+                if (!argv[2])
+                    throw new Error('sandbox read requires <file>.');
+                console.log((await session.readFile(argv[2])).content);
+                break;
+            }
+            case 'edit': {
+                if (!argv[2])
+                    throw new Error('sandbox edit requires <intent.json>.');
+                const intent = JSON.parse(fs.readFileSync(path.resolve(argv[2]), 'utf8'));
+                console.log(JSON.stringify(await session.applyEditIntent(intent), null, 2));
+                break;
+            }
+            default:
+                throw new Error(`Unknown sandbox action: ${action}`);
+        }
+    }
+    finally {
+        if (action !== 'run')
+            await session.dispose();
+    }
 }
 function readChanges(file) {
     const value = JSON.parse(fs.readFileSync(file, 'utf8'));

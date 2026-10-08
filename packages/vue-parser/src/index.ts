@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { baseParse, type RootNode, type ElementNode, type Node, type AttributeNode, type DirectiveNode } from '@vue/compiler-dom';
+import { baseParse, NodeTypes, type RootNode, type ElementNode, type Node, type TextNode, type AttributeNode, type DirectiveNode } from '@vue/compiler-dom';
 import { parse as parseSfc, type SFCDescriptor, type SFCTemplateBlock } from '@vue/compiler-sfc';
 import {
   createNodeId,
@@ -132,8 +132,8 @@ function mapNode(
   projectRoot = process.cwd(),
 ): ParsedTemplateNode {
   const range = makeRange(fullText, offset + node.loc.start.offset, offset + node.loc.end.offset);
-  if (node.type === 2) {
-    const content = node.content;
+  if (node.type === NodeTypes.TEXT) {
+    const content = (node as TextNode).content;
     return {
       nodeId: createNodeId(file, structuralPath, 'text', 'text', projectRoot),
       kind: 'text',
@@ -215,7 +215,7 @@ function mapProp(fullText: string, offset: number, prop: AttributeNode | Directi
   if (prop.exp) {
     valueRange = makeRange(fullText, offset + prop.exp.loc.start.offset, offset + prop.exp.loc.end.offset);
   }
-  return { name: prop.name.name, arg, expression, kind: 'directive', range, valueRange };
+  return { name: prop.name, arg, expression, kind: 'directive', range, valueRange };
 }
 
 function isComponentTag(tag: string): boolean {

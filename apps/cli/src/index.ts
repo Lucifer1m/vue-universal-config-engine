@@ -21,6 +21,7 @@ import { verifyProject } from '@hcbridge/verifier';
 import { analyzeComponentContract, buildComponentDependencyGraph } from '@hcbridge/component-intelligence';
 import { createSandboxSession, type EditIntent } from '@hcbridge/sandbox-kernel';
 import { inspectDomTarget, type DomTargetSignature } from '@hcbridge/visual-inspector';
+import { buildAgentContext, createHeuristicAgent } from '@hcbridge/agent-kernel';
 
 const [, , command, ...args] = process.argv;
 
@@ -35,6 +36,7 @@ try {
     case 'analyze': analyze(args[0]); break;
     case 'inspect': inspect(args[0], args[1]); break;
     case 'inspect-runtime': inspectRuntime(args[0], args[1]); break;
+    case 'agent-plan': agentPlan(args[0], args[1], args.slice(2).join(' ')); break;
     case 'capabilities': capabilities(args[0]); break;
     case 'contract': contract(args[0]); break;
     case 'graph': graph(args[0], args.slice(1)); break;
@@ -130,6 +132,18 @@ function inspectRuntime(projectDir?: string, targetFile?: string) {
   inspectDomTarget(path.resolve(projectDir!), target)
     .then((result) => console.log(JSON.stringify(result, null, 2)))
     .catch((error) => { console.error(`hcbridge: ${String(error)}`); process.exitCode = 2; });
+}
+
+async function agentPlan(projectDir?: string, targetFile?: string, prompt?: string) {
+  assertPath(projectDir);
+  assertFile(targetFile);
+  if (!prompt?.trim()) throw new Error('agent-plan requires a prompt.');
+  const root = path.resolve(projectDir!);
+  const target = JSON.parse(fs.readFileSync(path.resolve(targetFile!), 'utf8')) as DomTargetSignature;
+  const inspection = await inspectDomTarget(root, target);
+  const context = await buildAgentContext(root, { prompt, target, inspection });
+  const plan = await createHeuristicAgent().plan(context);
+  console.log(JSON.stringify({ inspection, plan }, null, 2));
 }
 
 function capabilities(file?: string) {

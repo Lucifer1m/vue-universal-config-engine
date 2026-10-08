@@ -9,6 +9,7 @@ import {
   type DomTargetSignature,
 } from '@hcbridge/visual-inspector';
 import { createSandboxSession, type EditIntent, type SandboxSession, type SandboxStatus } from '@hcbridge/sandbox-kernel';
+import { applyAgentPlan, buildAgentContext, createHeuristicAgent, type AgentPlan, type AgentRequest } from '@hcbridge/agent-kernel';
 
 const argv = process.argv.slice(2);
 const projectArg = readFlag('--project') ?? '.';
@@ -70,6 +71,22 @@ const server = http.createServer(async (req, res) => {
       const body = await readJson(req) as DomTargetSignature;
       if (!body || typeof body.tag !== 'string') return sendJson(res, 400, { error: 'INVALID_INSPECT_TARGET' });
       return sendJson(res, 200, await inspectDomTarget(target.projectRoot, body));
+    }
+    if (req.method === 'POST' && action === 'agent/plan') {
+      const body = await readJson(req) as AgentRequest;
+      if (!body || typeof body.prompt !== 'string') return sendJson(res, 400, { error: 'PROMPT_REQUIRED' });
+      let request = body;
+      if (body.target && !body.inspection) {
+        request = { ...body, inspection: await inspectDomTarget(target.projectRoot, body.target) };
+      }
+      const context = await buildAgentContext(target.projectRoot, request);
+      const plan = await createHeuristicAgent().plan(context);
+      return sendJson(res, 200, plan);
+    }
+    if (req.method === 'POST' && action === 'agent/apply') {
+      const body = await readJson(req) as { plan?: AgentPlan };
+      if (!body?.plan?.intent) return sendJson(res, 400, { error: 'PLAN_REQUIRED' });
+      return sendJson(res, 200, await applyAgentPlan(target, body.plan));
     }
     if (req.method === 'PUT' && action === 'file') {
       const body = await readJson(req);
@@ -153,10 +170,9 @@ async function proxyPreview(
 function injectBridge(html: string, script: string, previewUrl: string): string {
   const base = `<base href="${previewUrl.replace(/\/$/, '')}/">`;
   const tag = `<script data-hcbridge-inspector>${script}</script>`;
-  const injected = `<head>${base}${tag}</head>`;
   if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, (match) => `${match}${base}${tag}`);
-  if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, (match) => `${match}${injected}`);
-  return `${injected}${html}`;
+  if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, (match) => `${match}<head>${base}${tag}</head>`);
+  return `<head>${base}${tag}</head>${html}`;
 }
 
 function sendHtml(res: http.ServerResponse): void {
@@ -169,7 +185,7 @@ const HTML = String.raw`<!doctype html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>HCBridge Sandbox 0.6</title>
+<title>HCBridge Sandbox 0.7</title>
 <style>
 :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
 body { margin:0; background:#0d1117; color:#e6edf3; height:100vh; overflow:hidden; }
@@ -208,7 +224,7 @@ section:last-child { border-right:0; }
 <body>
 <header>
 <strong>HCBridge Sandbox 0.6</strong>
-<button id="prepare">Install</button><button id="start">Run</button><button id="stop">Stop</button><button id="inspectToggle">Inspect</button><button id="snapshot">Snapshot</button><button id="restore">Restore</button>
+<button id="prepare">Install</button><button id="start">Run</button><button id="stop">Stop</button><button id="inspectToggle">Inspect</button><button id="aiPlan">AI Plan</button><button id="applyPlan" disabled>Apply Plan</button><button id="snapshot">Snapshot</button><button id="restore">Restore</button>
 <span id="status">loading…</span>
 </header>
 <main>
@@ -234,6 +250,8 @@ const sessionId = ${JSON.stringify(session.id)};
 let selected = '';
 let selectedHash = '';
 let inspectMode = false;
+let lastInspection = null;
+let lastPlan = null;
 const $ = (id) => document.getElementById(id);
 async function api(path, options={}) { const res = await fetch(path, {headers:{'content-type':'application/json'}, ...options}); const text=await res.text(); if(!res.ok) throw new Error(text); return text?JSON.parse(text):{}; }
 function log(x){ $('console').textContent += (typeof x==='string'?x:JSON.stringify(x,null,2))+'\n'; $('console').scrollTop=$('console').scrollHeight; }
@@ -241,7 +259,7 @@ function previewUrl(){ return '/preview/'+sessionId+'/'; }
 function notifyInspector(){ const frame=$('preview'); frame.contentWindow?.postMessage({type:'hcbridge-inspector',enabled:inspectMode},'*'); }
 async function refreshFiles(){ const files=await api('/api/sessions/'+sessionId+'/files'); $('files').innerHTML=''; for(const f of files){ if(!/\.(vue|ts|tsx|js|jsx|css|scss|json|html)$/.test(f.path)) continue; const b=document.createElement('button'); b.className='file'+(f.path===selected?' active':''); b.textContent=f.path; b.onclick=()=>openFile(f.path); $('files').appendChild(b); } if(!selected && $('files').firstChild) $('files').firstChild.click(); }
 async function openFile(file, range){ const r=await api('/api/sessions/'+sessionId+'/file?path='+encodeURIComponent(file)); selected=file; selectedHash=r.hash; $('editorTitle').textContent=file; $('editor').value=r.content; document.querySelectorAll('.file').forEach(x=>x.classList.toggle('active',x.textContent===file)); if(range){ requestAnimationFrame(()=>{ $('editor').focus(); $('editor').setSelectionRange(range.start.offset,range.end.offset); }); } }
-function renderInspection(result){ const node=$('inspector'); let html='<div class="inspect-head"><strong>Selection</strong><span class="badge '+result.state+'">'+result.state+'</span><span class="small">'+result.scannedFiles+' files · '+result.scannedNodes+' nodes</span></div>'; if(result.candidate){ const c=result.candidate; html+='<div class="mono">'+escapeHtml(c.file)+':'+c.range.start.line+':'+(c.range.start.column+1)+' · '+Math.round(c.confidence*100)+'%</div><div class="small">'+escapeHtml(c.reasons.join(', '))+'</div>'; } else { html+='<div class="small">没有足够证据自动选定源码。下面是候选：</div>'; } if(result.candidates?.length){ html+='<div>'; result.candidates.forEach((c,i)=>{ html+='<button class="candidate mono" data-candidate="'+i+'">'+escapeHtml(c.file+':'+c.range.start.line+' · '+Math.round(c.confidence*100)+'% · '+c.tag)+'</button>'; }); html+='</div>'; } node.innerHTML=html; Array.from(node.querySelectorAll('[data-candidate]')).forEach((el)=>el.onclick=()=>{const c=result.candidates[Number(el.dataset.candidate)]; if(c) openFile(c.file,c.range);}); }
+function renderInspection(result){ lastInspection=result; const node=$('inspector'); let html='<div class="inspect-head"><strong>Selection</strong><span class="badge '+result.state+'">'+result.state+'</span><span class="small">'+result.scannedFiles+' files · '+result.scannedNodes+' nodes</span></div>'; if(result.candidate){ const c=result.candidate; html+='<div class="mono">'+escapeHtml(c.file)+':'+c.range.start.line+':'+(c.range.start.column+1)+' · '+Math.round(c.confidence*100)+'%</div><div class="small">'+escapeHtml(c.reasons.join(', '))+'</div>'; } else { html+='<div class="small">没有足够证据自动选定源码。下面是候选：</div>'; } if(result.candidates?.length){ html+='<div>'; result.candidates.forEach((c,i)=>{ html+='<button class="candidate mono" data-candidate="'+i+'">'+escapeHtml(c.file+':'+c.range.start.line+' · '+Math.round(c.confidence*100)+'% · '+c.tag)+'</button>'; }); html+='</div>'; } node.innerHTML=html; Array.from(node.querySelectorAll('[data-candidate]')).forEach((el)=>el.onclick=()=>{const c=result.candidates[Number(el.dataset.candidate)]; if(c){ lastInspection={...result,state:'relocated',candidate:c}; openFile(c.file,c.range); renderInspection(lastInspection); }}); }
 function escapeHtml(value){ return String(value).replace(/[&<>\"]/g,(c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\':'&#92;','"':'&quot;'}[c])); }
 $('prepare').onclick=async()=>{ try { $('status').textContent='installing…'; log(await api('/api/sessions/'+sessionId+'/prepare',{method:'POST',body:'{}'})); refreshStatus(); } catch(e){log(e.message)} };
 $('start').onclick=async()=>{ try { $('status').textContent='starting…'; const r=await api('/api/sessions/'+sessionId+'/start',{method:'POST',body:'{}'}); $('preview').src=previewUrl(); log(r); refreshStatus(); } catch(e){log(e.message)} };
@@ -251,6 +269,17 @@ $('snapshot').onclick=async()=>{ try { log(await api('/api/sessions/'+sessionId+
 $('restore').onclick=async()=>{ try { log(await api('/api/sessions/'+sessionId+'/restore',{method:'POST',body:'{}'})); await refreshFiles(); } catch(e){log(e.message)} };
 $('save').onclick=async()=>{ if(!selected) return; try { const r=await api('/api/sessions/'+sessionId+'/file',{method:'PUT',body:JSON.stringify({path:selected,content:$('editor').value,expectedHash:selectedHash})}); selectedHash=r.hash; log(r.diff); await refreshFiles(); } catch(e){log(e.message)} };
 $('reload').onclick=()=>selected&&openFile(selected);
+$('aiPlan').onclick=async()=>{ try {
+  if(!lastInspection){ throw new Error('请先 Inspect 一个页面元素。'); }
+  const prompt=$('intent').value.trim(); if(!prompt) throw new Error('请输入自然语言修改要求。');
+  const plan=await api('/api/sessions/'+sessionId+'/agent/plan',{method:'POST',body:JSON.stringify({prompt,inspection:lastInspection,target:lastInspection.target})});
+  lastPlan=plan; $('applyPlan').disabled=!plan.intent?.operations?.length; log(plan);
+} catch(e){ log(e.message); } };
+$('applyPlan').onclick=async()=>{ try {
+  if(!lastPlan) throw new Error('没有可执行的 Agent Plan。');
+  const r=await api('/api/sessions/'+sessionId+'/agent/apply',{method:'POST',body:JSON.stringify({plan:lastPlan})});
+  log(r); $('applyPlan').disabled=true; lastPlan=null; await refreshFiles(); if(selected) await openFile(selected); refreshStatus();
+} catch(e){ log(e.message); } };
 $('applyIntent').onclick=async()=>{ try { const intent=JSON.parse($('intent').value); const r=await api('/api/sessions/'+sessionId+'/edit-intent',{method:'POST',body:JSON.stringify(intent)}); log(r); await refreshFiles(); if(selected) await openFile(selected); } catch(e){log(e.message)} };
 $('preview').addEventListener('load',notifyInspector);
 window.addEventListener('message',async(event)=>{ const data=event.data; if(!data||data.sessionId!==sessionId||data.type!=='hcbridge:select') return; try { const result=await api('/api/sessions/'+sessionId+'/inspect',{method:'POST',body:JSON.stringify(data.target)}); renderInspection(result); if(result.candidate) await openFile(result.candidate.file,result.candidate.range); } catch(e){ log(e.message); } });

@@ -175,8 +175,8 @@ export function analyzeVueFile(
   const blackbox = hcp.nodes.filter((n) => n.mode === 'blackbox').length;
   const opaque = hcp.nodes.filter((n) => n.mode === 'opaque').length;
   const configurable = hcp.nodes.reduce((count, node) => count + node.capabilities.filter((c) => c.editable).length, 0);
-  const localComponents = Object.values(resolutions).filter((r) => r.kind === 'local-vue').length;
-  const unresolvedComponents = Object.values(resolutions).filter((r) => r.kind === 'unresolved').length;
+  const localComponents = [...resolutions.values()].filter((r) => r.kind === 'local-vue').length;
+  const unresolvedComponents = [...resolutions.values()].filter((r) => r.kind === 'unresolved').length;
   return {
     file: absolute,
     relativeFile: toPosix(path.relative(root, absolute)),

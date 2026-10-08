@@ -156,6 +156,7 @@ export function detectPackageManager(projectRoot: string): PackageManagerInfo {
 
 function detectPackageManagerInDirectory(directory: string): PackageManagerInfo | undefined {
   const packageJsonPath = path.join(directory, 'package.json');
+  if (!fs.existsSync(packageJsonPath)) return undefined;
   let packageJson: Record<string, unknown> = {};
   try {
     packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')) as Record<string, unknown>;
@@ -286,6 +287,7 @@ export class SandboxSession extends EventEmitter implements SandboxRuntime {
     this.ensureNotDisposed();
     if (this.process) return this.status();
     if (this.state === 'created' || this.state === 'stopped' || this.state === 'failed') await this.prepare();
+    this.lastError = null;
     this.setState('starting');
     const command = this.options.command ?? this.packageManager.executable;
     const args = this.options.command
@@ -530,7 +532,10 @@ export class SandboxSession extends EventEmitter implements SandboxRuntime {
       this.emit('process:exit', { code, signal });
       if (this.process === child) {
         this.process = null;
-        if (code !== 0 && this.state !== 'stopped' && this.state !== 'disposed') this.fail(`Preview process exited with code ${String(code)}.`);
+        if (this.state !== 'stopped' && this.state !== 'disposed') {
+          if (code !== 0) this.fail(`Preview process exited with code ${String(code)}.`);
+          else this.setState('stopped');
+        }
       }
     });
   }

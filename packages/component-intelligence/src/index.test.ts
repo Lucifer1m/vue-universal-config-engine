@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { analyzeComponentContract, buildComponentDependencyGraph } from './index';
+import { analyzeComponentContract, buildComponentDependencyGraph } from './index.js';
 
 describe('component intelligence', () => {
   it('extracts local component contract', () => {
