@@ -1,8 +1,8 @@
 {
   "name": "vue-universal-config-engine",
   "private": true,
-  "version": "0.7.0",
-  "description": "Vue 3 high-code evolution engine with a real-project sandbox, visual source inspection and safe AI/human edit intents.",
+  "version": "0.8.0",
+  "description": "Vue 3 high-code evolution engine with sandbox, visual inspection and provider-agnostic AI code evolution.",
   "type": "module",
   "packageManager": "pnpm@12.9.1",
   "engines": {
@@ -31,7 +31,10 @@
     "sandbox": "tsx apps/sandbox/src/index.ts --project .",
     "sandbox:fixture": "tsx apps/sandbox/src/index.ts --project examples/antdv-vite",
     "inspect-runtime:fixture": "tsx apps/cli/src/index.ts inspect-runtime fixtures/inspector fixtures/inspector/save-user.button.json",
-    "agent:fixture": "tsx apps/cli/src/index.ts agent-plan fixtures/agent fixtures/agent/button.json \"把这个按钮改成 dashed\""
+    "agent:fixture": "tsx apps/cli/src/index.ts agent-plan fixtures/agent fixtures/agent/button.json \"把这个按钮改成 dashed\"",
+    "agent:provider:fixture": "tsx apps/cli/src/index.ts agent-provider fixtures/agent fixtures/agent/button.json \"把这个按钮改成 dashed\"",
+    "context:fixture": "tsx apps/cli/src/index.ts agent-context fixtures/agent fixtures/agent/button.json",
+    "agent-provider:fixture": "tsx apps/cli/src/index.ts agent-provider fixtures/agent fixtures/agent/button.json \"把这个按钮改成 dashed\""
   },
   "devDependencies": {
     "@types/node": "^24.7.2",
@@ -42,5 +45,6 @@
     "tsx": "4.23.15",
     "typescript": "7.0.2",
     "vitest": "5.0.3"
-  }
+  },
+  "sandbox:inspector": "tsx apps/sandbox/src/index.ts --project examples/antdv-vite"
 }

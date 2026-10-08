@@ -6,3 +6,8 @@ coverage/
 .hcbridge/reports/
 .DS_Store
 *.local
+
+.hcbridge/sandbox/
+
+*.tsbuildinfo
+.hcbridge

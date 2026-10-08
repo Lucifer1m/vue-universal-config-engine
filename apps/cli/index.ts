@@ -38,7 +38,7 @@ try {
     case 'inspect': inspect(args[0], args[1]); break;
     case 'inspect-runtime': inspectRuntime(args[0], args[1]); break;
     case 'agent-plan': agentPlan(args[0], args[1], args.slice(2).join(' ')); break;
-    case 'agent-provider': agentPlan(args[0], args[1], args.slice(2).join(' ')); break;
+    case 'agent-provider': agentProviderPlan(args[0], args[1], args.slice(2).join(' ')); break;
     case 'agent-context': agentContext(args[0], args[1]); break;
     case 'capabilities': capabilities(args[0]); break;
     case 'contract': contract(args[0]); break;
@@ -146,7 +146,11 @@ async function agentPlan(projectDir?: string, targetFile?: string, prompt?: stri
   const inspection = await inspectDomTarget(root, target);
   const context = await buildAgentContext(root, { prompt, target, inspection });
   const plan = await createConfiguredAgent().plan(context);
-  console.log(JSON.stringify({ inspection, plan }, null, 2));
+  console.log(JSON.stringify({ provider: plan.provider, inspection, plan }, null, 2));
+}
+
+async function agentProviderPlan(projectDir?: string, targetFile?: string, prompt?: string) {
+  return agentPlan(projectDir, targetFile, prompt);
 }
 
 async function agentContext(projectDir?: string, targetFile?: string) {

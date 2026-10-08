@@ -1,6 +1,6 @@
 {
   "name": "@hcbridge/cli",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "module",
   "private": true,
   "bin": {
@@ -21,7 +21,8 @@
     "@hcbridge/evolution-engine": "workspace:*",
     "@hcbridge/component-intelligence": "workspace:*",
     "@hcbridge/sandbox-kernel": "workspace:*",
+    "@hcbridge/agent-kernel": "workspace:*",
     "@hcbridge/visual-inspector": "workspace:*",
-    "@hcbridge/agent-kernel": "workspace:*"
+    "@hcbridge/llm-provider": "workspace:*"
   }
 }

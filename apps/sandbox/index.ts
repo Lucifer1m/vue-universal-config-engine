@@ -160,7 +160,7 @@ async function proxyPreview(
   if (contentType.includes('text/html')) {
     const bridge = createInspectorBridgeScript(target.id);
     const html = body.toString('utf8');
-    body = Buffer.from(injectBridge(html, bridge, previewUrl), 'utf8');
+    body = Buffer.from(injectBridge(html, bridge), 'utf8');
     responseHeaders.set('content-type', 'text/html; charset=utf-8');
   }
   responseHeaders.set('content-length', String(body.byteLength));
@@ -168,12 +168,11 @@ async function proxyPreview(
   res.end(body);
 }
 
-function injectBridge(html: string, script: string, previewUrl: string): string {
-  const base = `<base href="${previewUrl.replace(/\/$/, '')}/">`;
+function injectBridge(html: string, script: string): string {
   const tag = `<script data-hcbridge-inspector>${script}</script>`;
-  if (/<head[^>]*>/i.test(html)) return html.replace(/<head[^>]*>/i, (match) => `${match}${base}${tag}`);
-  if (/<html[^>]*>/i.test(html)) return html.replace(/<html[^>]*>/i, (match) => `${match}<head>${base}${tag}</head>`);
-  return `<head>${base}${tag}</head>${html}`;
+  if (/<\/head>/i.test(html)) return html.replace(/<\/head>/i, `${tag}</head>`);
+  if (/<\/body>/i.test(html)) return html.replace(/<\/body>/i, `${tag}</body>`);
+  return `${tag}${html}`;
 }
 
 function sendHtml(res: http.ServerResponse): void {
@@ -186,7 +185,7 @@ const HTML = String.raw`<!doctype html>
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>HCBridge Sandbox 0.7</title>
+<title>HCBridge Sandbox 0.6</title>
 <style>
 :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, sans-serif; }
 body { margin:0; background:#0d1117; color:#e6edf3; height:100vh; overflow:hidden; }
@@ -207,6 +206,7 @@ section:last-child { border-right:0; }
 #editor { flex:1; min-height:0; resize:none; border:0; outline:0; background:#0d1117; color:#e6edf3; padding:14px; font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace; tab-size:2; }
 #preview { flex:1; min-height:0; width:100%; border:0; background:white; }
 #console { height:130px; border-top:1px solid #21262d; overflow:auto; padding:8px; font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:pre-wrap; color:#8b949e; }
+#agentHelp { border-top:1px solid #21262d; padding:6px 8px; font-size:11px; color:#8b949e; }
 #ai { height:120px; border-top:1px solid #21262d; display:grid; grid-template-columns:1fr auto; gap:8px; padding:8px; }
 #intent { resize:none; min-height:0; background:#0d1117; color:#e6edf3; border:1px solid #30363d; border-radius:6px; padding:8px; font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; }
 .toolbar { display:flex; gap:6px; padding:7px; border-bottom:1px solid #21262d; }
@@ -238,6 +238,7 @@ section:last-child { border-right:0; }
 <div class="toolbar"><button id="save">Save</button><button id="reload">Reload</button></div>
 <textarea id="editor" spellcheck="false"></textarea>
 <div id="ai"><textarea id="intent" placeholder='AI / 人工 Intent，例如：{"actor":"ai","description":"...","operations":[...]}'></textarea><button id="applyIntent">Apply Intent</button></div>
+<div id="agentHelp">Provider: 自动检测 HCBRIDGE_AGENT_ENDPOINT / MODEL；未配置时使用 heuristic-local。</div>
 </section>
 <section>
 <div class="title">Live Preview</div>

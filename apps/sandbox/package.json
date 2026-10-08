@@ -1,6 +1,6 @@
 {
   "name": "@hcbridge/sandbox",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +9,7 @@
   "dependencies": {
     "@hcbridge/sandbox-kernel": "workspace:*",
     "@hcbridge/visual-inspector": "workspace:*",
-    "@hcbridge/agent-kernel": "workspace:*"
+    "@hcbridge/agent-kernel": "workspace:*",
+    "@hcbridge/llm-provider": "workspace:*"
   }
 }

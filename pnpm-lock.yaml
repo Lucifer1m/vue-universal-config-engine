@@ -208,6 +208,9 @@ importers:
       '@hcbridge/hcp':
         specifier: workspace:*
         version: link:../../packages/hcp
+      '@hcbridge/llm-provider':
+        specifier: workspace:*
+        version: link:../../packages/llm-provider
       '@hcbridge/patch-engine':
         specifier: workspace:*
         version: link:../../packages/patch-engine
@@ -238,6 +241,9 @@ importers:
       '@hcbridge/agent-kernel':
         specifier: workspace:*
         version: link:../../packages/agent-kernel
+      '@hcbridge/llm-provider':
+        specifier: workspace:*
+        version: link:../../packages/llm-provider
       '@hcbridge/sandbox-kernel':
         specifier: workspace:*
         version: link:../../packages/sandbox-kernel
@@ -361,6 +367,15 @@ importers:
       '@hcbridge/source-model':
         specifier: workspace:*
         version: link:../source-model
+
+  packages/llm-provider:
+    dependencies:
+      '@hcbridge/agent-kernel':
+        specifier: workspace:*
+        version: link:../agent-kernel
+      '@hcbridge/sandbox-kernel':
+        specifier: workspace:*
+        version: link:../sandbox-kernel
 
   packages/patch-engine:
     dependencies:
